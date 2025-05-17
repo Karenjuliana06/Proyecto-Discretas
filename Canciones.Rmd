@@ -1,0 +1,1099 @@
+---
+title: "Relaciones entre Géneros"
+author:
+- David Quesada
+- Julian Cruz
+- Tomas Guerra
+- Juliana Borja
+date: ''
+output:
+  html_document:
+    number_sections: true
+    theme: paper
+  pdf_document: 
+    toc: true
+    highlight: espresso
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+
+# Introducción
+
+**Procesamiento de lenguaje natural** (*natural language processing*) o **lingüística computacional** (*computational linguistics*).
+
+Extraer significado algorítmicamente de textos.
+
+Los computadores son buenos para procesar texto, pero no son buenos entendiéndolo. Por el contrario los humanos son buenos para entender texto, pero no son buenos para procesarlo.
+
+
+## Objetivos {-}
+
+- Identificar palabras con mayor importancia.
+- Cuantificar relaciones y conexiones entre palabras.
+
+
+# Caso de estudio: Baladas y Reggaeton
+
+
+
+## Manuel_Medrano_Bajo_el_Agua_Una_y_otra_vez_La_Mujer_Que_Bota_Fuego_Si_Pudiera_La_Distancia{-}
+## Andres_Cepeda_Lo_Mejor_Que_Hay_en_mi_Vida_Mejor_que_a_ti_me_va_Besos_Usados_Tengo_Ganas{-}
+## Morat_Como_te_Atreves_Besos_en_Guerra_Aprender_a_Quererte_a_donde_Vamos{-}
+
+ https://www.letras.com/manuel-medrano/bajo-el-agua/
+ https://www.letras.com/manuel-medrano/una-y-otra-vez/
+ https://www.letras.com/manuel-medrano/la-mujer-que-bota-fuego/
+ https://www.letras.com/manuel-medrano/si-pudiera/
+ https://www.letras.com/manuel-medrano/la-distancia/
+ https://www.letras.com/andres-cepeda/lo-mejor-que-hay-en-mi-vida/
+ https://www.letras.com/andres-cepeda/mejor-que-a-ti-me-va/
+ https://www.letras.com/andres-cepeda/1792354/
+ https://www.letras.com/andres-cepeda/266343/
+ https://www.letras.com/morat/como-te-atreves/
+ https://www.letras.com/morat/besos-en-guerra/
+ https://www.letras.com/morat/aprender-a-quererte/
+ https://www.letras.com/morat/a-donde-vamos/ 
+
+## Reykon_el_lider_El_chisme_Remix_Tu_Cuerpo_Me_Llama_Remix_El_Error_La_Santa_Ginza_Remix_Ay_Vamos_6_Am_Rojo_Culpables_Una_Lady_Como_Tu_Esclavos_de_tus_Besos_La_Bachata{-}
+
+ https://www.youtube.com/watch?v=3xinCpjWxxU
+ https://www.youtube.com/watch?v=jgQ2MSwgC6A
+ https://www.youtube.com/watch?v=C3jp2lid58g
+ https://www.youtube.com/watch?v=u5KFYnfKgWo
+ https://www.youtube.com/watch?v=m8JoSkGVsFA
+ https://www.youtube.com/watch?v=TapXs54Ah3E
+ https://www.youtube.com/watch?v=yUV9JwiQLog&pp=ygUDNmFt
+ https://www.youtube.com/watch?v=_tG70FWd1Ds&pp=ygUEcm9qbw%3D%3D
+ https://www.youtube.com/watch?v=VYtJAuoZxcc&pp=ygUQdW5hIGxhZHkgY29tbyB0dQ%3D%3D
+ https://www.youtube.com/watch?v=1afoVNPPQCI&pp=ygUUZXNjbGF2byBkZSB0dXMgYmVzb3M%3D
+ https://www.youtube.com/watch?v=TiM_TFpT_DE&pp=ygUKbGEgYmFjaGF0YQ%3D%3D 
+ 
+## Los_De_Adentro_Nubes_Negras_Quiero_Amarte_No_Mas_Tal_Vez_{-}
+## Kraken_Fragil_al_Viento_Vestido_de_Cristal_America_Silencioso_Amor_Arteciopelados_Baracunata_Florecita_Rockera_{-}
+
+ https://youtu.be/8_Tc5uP8SL4?si=DvK_wDQjGbTRIebT
+ https://youtu.be/8hGAklEil10?si=G5-nZzi1n0rdJprE
+ https://youtu.be/s09hOXaPhJ8?si=YLYijSYH1bMkCWnS
+ https://youtu.be/HqiX6-f5w-s?si=Ar1XWmjQP62TSuJX
+ https://youtu.be/1tVF5rpmFM4?si=N9ItbxZCNnGU8tBm
+ https://youtu.be/I4YtarQbE7U?si=GbTw8n7ih3JVFAyN
+ https://youtu.be/Pcy_F40W9EM?si=_DXgEk08DYAgLU2F
+ https://youtu.be/Q3ReRsnYG4I?si=mmNq8bDT1ONyJpL1
+ https://youtu.be/mqOCHYhRaGY?si=hKE0l0zyVzcQQr8V
+ https://youtu.be/ARR3gkzX8I0?si=JCz3UO1Uzjz6FijW
+
+
+
+# Importar texto
+
+```{r}
+##### importar datos
+suppressMessages(suppressWarnings(library(readr)))
+suppressMessages(suppressWarnings(library(tidyverse)))
+# warnings debido a caracteres no UTF-8 o vacios ("")
+# UTF-8 (8-bit Unicode Transformation Format) es un formato de codificación de caracteres 
+# capaz de codificar todos los code points validos en Unicode
+text_Baladas <- read_csv("Baladas_sin_tildes.txt", col_names = FALSE, show_col_types = FALSE)
+class(text_Baladas)
+text_Baladas <- c(text_Baladas)
+class(text_Baladas)
+text_Baladas <- unlist(text_Baladas)
+class(text_Baladas)
+names(text_Baladas) <- NULL  # importante!
+head(text_Baladas, n = 3)
+# Reggaeton
+text_Reggaeton <- unlist(c(read_csv("Reggaeton_proyecto_limpio_limpio.txt", col_names = FALSE, show_col_types = FALSE)))
+names(text_Reggaeton) <- NULL
+# Rock 
+text_Rock_canciones <- unlist(c(read_csv("Rock_canciones.txt", col_names = FALSE, show_col_types = FALSE)))
+names(text_Rock_canciones) <- NULL
+```
+
+
+```{r}
+##### data frame formato tidy
+# Baladas
+text_Baladas <- tibble(line = 1:length(text_Baladas), text = text_Baladas)  # tibble en lugar de data_frame
+class(text_Baladas)
+dim(text_Baladas)
+head(text_Baladas, n = 3)
+# texto no normalizado
+# no tiene "estructura" para analizar
+# Reggaeton
+text_Reggaeton<- tibble(line = 1:length(text_Reggaeton), text = text_Reggaeton)
+# Rock canciones 
+text_Rock_canciones<- tibble(line = 1:length(text_Rock_canciones), text = text_Rock_canciones)
+```
+
+
+
+# Tokenización
+
+Almacenar el texto en formato estructurado.
+
+Token: unidad de análisis.
+
+La tokenización básica consiste en que cada token es una palabra.
+
+Formato de de un token por linea.
+
+Por defecto se elimina la puntuación y se normaliza el texto a minúsculas (las tíldes no se eliminan por defecto).
+
+
+```{r}
+suppressMessages(suppressWarnings(library(tidytext)))
+suppressMessages(suppressWarnings(library(magrittr)))
+##### tokenizacion formato tidy
+# ---------- Baladas ----------
+text_Baladas %<>%
+  unnest_tokens(input = text, output = word) %>%
+  filter(!is.na(word))  # importante!
+class(text_Baladas)
+dim(text_Baladas)
+head(text_Baladas, n = 10)
+# ---------- Reggaeton ----------
+text_Reggaeton %<>%
+  unnest_tokens(input = text, output = word) %>%
+  filter(!is.na(word))
+dim(text_Reggaeton)
+head(text_Reggaeton, n = 10)
+# -----------Rock_canciones-------
+text_Rock_canciones%<>%
+    unnest_tokens(input = text, output = word) %>%
+    filter(!is.na(word))
+dim(text_Rock_canciones)
+head(text_Rock_canciones, n = 10)
+```
+
+# Normalización del texto
+
+Remover:
+
+- Minúsculas.
+- Puntuación.
+- Símbolos especiales (e.g., \#).
+- Números.
+- Acentos. 
+- Sufijos (e.g., conservar "comput" en lugar de "computational", "computers", "computation").
+- *Stop words* (e.g., artículos, preposiciones).
+
+
+```{r}
+##### texto con numeros?
+# ---------- Baladas ----------
+text_Baladas %>%
+  filter(grepl(pattern = '[0-9]', x = word)) %>% 
+  count(word, sort = TRUE)
+# ---------- Reggaeton ----------
+text_Reggaeton %>%
+  filter(grepl(pattern = '[0-9]', x = word)) %>% 
+  count(word, sort = TRUE)
+# ------------Rock_canciones-----------
+text_Rock_canciones %>%
+    filter(grepl(pattern = '[0-9]', x = word)) %>%
+    count(word, sort = TRUE)
+```
+
+```{r}
+##### remover texto con numeros
+# ---------- Baladas ----------
+text_Baladas %<>%
+  filter(!grepl(pattern = '[0-9]', x = word))
+dim(text_Baladas)
+# ---------- Reggaeton ----------
+text_Reggaeton %<>%
+  filter(!grepl(pattern = '[0-9]', x = word))
+dim(text_Reggaeton)
+# -----------Rock_canciones-----
+text_Rock_canciones %<>%
+  filter(!grepl(pattern = '[0-9]', x = word))
+dim(text_Rock_canciones)
+```
+
+
+```{r}
+##### stop words 
+# 3 diccionarios en ingles (onix, SMART, snowball) incluidos por defecto en tidytext
+data(stop_words)
+class(stop_words)
+dim(stop_words)
+head(stop_words, n = 10)
+table(stop_words$lexicon)
+```
+
+
+
+```{r}
+###### stop words 
+# no hay diccionarios en español disponibles en tidytext
+# diccionario COUNTWORDSFREE en español (con acentos)
+# http://countwordsfree.com/stopwords/spanish
+# otras alternativas:
+#   https://github.com/stopwords-iso/stopwords-es
+#   de tm::stopwords("spanish")
+# se conserva el mismo formato de los diccionarios en tidytext
+stop_words_es <- tibble(word = unlist(c(read.table("Stop_words.txt", quote="\"", comment.char=""))), lexicon = "custom")
+dim(stop_words_es)
+head(stop_words_es, n = 10)
+```
+
+
+
+```{r}
+##### remover stop words
+# ---------- Baladas ----------
+text_Baladas %<>% 
+  anti_join(x = ., y = stop_words_es)
+dim(text_Baladas)
+head(text_Baladas, n = 10)
+# ---------- Reggaeton ----------
+text_Reggaeton %<>% 
+  anti_join(x = ., y = stop_words_es)
+dim(text_Reggaeton)
+head(text_Reggaeton, n = 10)
+#-----------Rock_canciones------
+text_Rock_canciones %<>%
+    anti_join(x = . , y = stop_words_es)
+dim(text_Rock_canciones)
+head(text_Rock_canciones, n = 10)
+```
+
+
+
+```{r}
+##### remover acentos
+replacement_list <- list('á' = 'a', 'é' = 'e', 'í' = 'i', 'ó' = 'o', 'ú' = 'u')
+# ---------- Baladas ----------
+text_Baladas %<>% 
+  mutate(word = chartr(old = names(replacement_list) %>% str_c(collapse = ''), 
+                       new = replacement_list %>% str_c(collapse = ''),
+                       x = word))
+dim(text_Baladas)
+head(text_Baladas, n = 10)
+# ---------- Reggaeton ----------
+text_Reggaeton %<>% 
+  mutate(word = chartr(old = names(replacement_list) %>% str_c(collapse = ''), 
+                       new = replacement_list %>% str_c(collapse = ''),
+                       x = word))
+dim(text_Reggaeton)
+head(text_Reggaeton, n = 10)
+#-----------------Rock_canciones-------------
+text_Rock_canciones %<>%
+  mutate(word = chartr(old = names(replacement_list)%>% str_c(collapse = ''),
+                       new = replacement_list %>% str_c(collapse = ''),
+                       x = word))
+dim(text_Rock_canciones)
+head(text_Rock_canciones, n= 10)
+```
+
+
+# Tokens más frecuentes
+
+
+
+```{r}
+##### top 10 de tokens mas frecuentes
+# ---------- Baladas ----------
+text_Baladas%>% 
+  count(word, sort = TRUE) %>%
+  head(n = 10)
+# ---------- Reggaeton ----------
+text_Reggaeton%>% 
+  count(word, sort = TRUE)  %>%
+  head(n = 10)
+#------------Rock_canciones-------------
+text_Rock_canciones%>%
+  count(word, sort = TRUE) %>%
+  head(n = 10)
+```
+
+
+
+```{r, fig.width=10, fig.height=5, fig.align='center'}
+##### viz
+suppressMessages(suppressWarnings(library(gridExtra)))
+# ---------- Baladas ----------
+text_Baladas %>%
+  count(word, sort = TRUE) %>%
+  filter(n > 7) %>%
+  mutate(word = reorder(word, n)) %>%
+  ggplot(aes(x = word, y = n)) +
+    theme_light() + 
+    geom_col(fill = 'red4', alpha = 0.8) +
+    xlab(NULL) +
+    ylab("Frecuencia") +
+    coord_flip() +
+    ggtitle(label = 'Baladas: Conteo de palabras') -> p1
+# ---------- Reggaeton ----------
+text_Reggaeton %>%
+  count(word, sort = TRUE) %>%
+  filter(n > 7) %>%
+  mutate(word = reorder(word, n)) %>%
+  ggplot(aes(x = word, y = n)) +
+    theme_light() + 
+    geom_col(fill = 'blue4', alpha = 0.8) +
+    xlab(NULL) +
+    ylab("Frecuencia") +
+    coord_flip() +
+    ggtitle(label = 'Reggaeton: Conteo de palabras') -> p2
+# desplegar grafico
+grid.arrange(p1, p2, ncol = 2)
+#-----------Rock_canciones--------
+text_Rock_canciones %>%
+  count(word, sort = TRUE) %>%
+  filter(n > 7) %>%
+  mutate(word = reorder(word,n)) %>%
+  ggplot(aes(x = word, y = n)) +
+    theme_light()+
+    geom_col(fill= 'purple4', alpha = 0.8)+
+    xlab(NULL)+
+    ylab("Frecuencia")+
+    coord_flip()+
+    ggtitle(label = 'Rock_canciones: Conteo de palabras') -> p3
+# desplegar grafico 
+grid.arrange(p1, p2, p3, ncol = 3)
+```
+
+
+
+```{r, fig.width=10, fig.height=5, fig.align='center'}
+suppressMessages(suppressWarnings(library(wordcloud)))
+###### viz
+par(mfrow = c(1,3), mar = c(1,1,2,1), mgp = c(1,1,1))
+# ---------- Baladas ----------
+set.seed(123)
+text_Baladas %>%
+  count(word, sort = TRUE) %>%
+  with(wordcloud(words = word, freq = n, max.words = 30, colors = 'red4'))
+title(main = "Baladas")
+# ---------- Reggaeton ----------
+set.seed(123)
+text_Reggaeton %>%
+  count(word, sort = TRUE) %>%
+  with(wordcloud(words = word, freq = n, max.words = 20, colors = 'blue4'))
+title(main = "Reggaeton")
+#-------------Rock_canciones-----------
+set.seed(123)
+text_Rock_canciones %>%
+  count(word, sort = TRUE) %>%
+  with(wordcloud(words = word, freq = n, max.words = 20, colors = 'purple4'))
+title(main = "Rock_canciones")
+```
+
+
+```{r}
+##### frecuencias relativas de la palabras
+bind_rows(mutate(.data = text_Baladas, author = "Baladas"),
+                       mutate(.data = text_Reggaeton, author = "Reggaeton"),
+                        mutate(.data = text_Rock_canciones, author = "Rock_canciones")) %>%
+  count(author, word) %>%
+  group_by(author) %>%
+  mutate(proportion = n/sum(n)) %>%
+  select(-n) %>%
+  spread(author, proportion, fill = 0) -> frec  # importante!
+frec %<>% 
+  select(word, Baladas, Reggaeton, Rock_canciones)
+dim(frec)
+head(frec, n = 10)
+```
+
+
+```{r}
+##### top 10 palabras en comun
+# orden anidado respecto a Baladas, Reggaeton y Rock
+frec %>%
+  filter(Baladas !=0, Reggaeton != 0, Rock_canciones != 0) %>%
+  arrange(desc(Baladas), desc(Reggaeton), desc(Rock_canciones)) -> frec_comun
+dim(frec_comun)
+head(frec_comun, n = 10)
+```
+
+
+```{r}
+###### proporcion palabras en comun
+dim(frec_comun)[1]/dim(frec)[1]
+```
+
+
+
+```{r}
+##### correlacion de las frecuencias
+# cuidado con los supuestos de la prueba
+# es posible usar Bootstrap como alternativa
+cor.test(x = frec$Baladas, y = frec$Baladas)
+cor.test(x = frec_comun$Reggaeton, y = frec_comun$Reggaeton)
+cor.test(x = frec_comun$Rock_canciones, y = frec_comun$Rock_canciones)
+```
+
+
+
+# Análisis de sentimiento
+
+A las palabras (tokens simples o unigramas) se les asigna un **puntaje** (escala, positivo/negativo, emoción).
+
+El **sentimiento** se define como la suma del puntaje de las palabras individuales.
+
+Diccionarios:
+
+- Basados en tokens simples, no expresiones compuestas (e.g. "no good").
+- Hay palabras neutras.
+
+Objetivos:
+
+- Entender actitudes y opiniones.
+- Identificar flujos de narrativas.
+- Cuantificar la contribución de palabras en la expresión de un sentimiento.
+- Abordar el contenido emocional de un texto algorítmicamente.
+
+Caveats:
+
+- Tener en cuenta sarcasmo y expresiones compuestas en la interpretación.
+- Cuidado con los cambios semánticos debido a composiciones de unigramas. Por ejemplo, como "I'm not happy and I don't like it!" dado que las que esta compuesta palabras positivas (¡hacer n-gramas).
+
+
+```{r}
+##### sentiments 
+# 3 diccionarios en ingles (AFINN, Bing, NRC) incluidos por defecto en tidytext
+# AFINN: Finn Arup Nielsen, escala de -5 a 5.
+#   http://www2.imm.dtu.dk/pubdb/views/publication_details.php?id=6010
+# Bing: Bing Liu and collaborators, clasificacion binaria (+/-).
+#   https://www.cs.uic.edu/~liub/FBS/sentiment-analysis.html
+# NRC: Saif Mohammad and Peter Turney, clasificacion binaria (+/-) y algunas categorias.
+#   http://saifmohammad.com/WebPages/NRC-Emotion-Lexicon.htm
+```
+
+
+
+```{r}
+# diccionarios
+# no hay diccionarios en español disponibles en tidytext
+# https://www.kaggle.com/datasets/rtatman/sentiment-lexicons-for-81-languages
+positive_words <- read_csv("Positive_words.txt", col_names = "word", show_col_types = FALSE) %>%
+  mutate(sentiment = "Positivo")
+negative_words <- read_csv("Negative_words.txt", col_names = "word", show_col_types = FALSE) %>%
+  mutate(sentiment = "Negativo")
+sentiment_words <- bind_rows(positive_words, negative_words)
+# comparacion de diccionarios
+get_sentiments("bing") %>%
+  count(sentiment)
+sentiment_words %>%
+  count(sentiment)
+```
+
+
+```{r, fig.width=11, fig.height=4, fig.align='center'}
+###### viz
+suppressMessages(suppressWarnings(library(RColorBrewer)))
+# ---------- Baladas ----------
+text_Baladas %>%
+  inner_join(sentiment_words) %>%
+  count(word, sentiment, sort = TRUE) %>%
+  filter(n > 2) %>%
+  mutate(n = ifelse(sentiment == "Negativo", -n, n)) %>%
+  mutate(word = reorder(word, n)) %>%
+  ggplot(aes(word, n, fill = sentiment)) +
+    geom_col() +
+    scale_fill_manual(values = brewer.pal(8,'Dark2')[c(2,5)]) +
+    coord_flip(ylim = c(-7,7)) +
+    labs(y = "Frecuencia",
+         x = NULL,
+         title = "Baladas: Conteo por sentiment") +
+    theme_minimal() -> p1
+# ---------- Reggaeton ----------
+text_Reggaeton %>%
+  inner_join(sentiment_words) %>%
+  count(word, sentiment, sort = TRUE) %>%
+  filter(n > 2) %>%
+  mutate(n = ifelse(sentiment == "Negativo", -n, n)) %>%
+  mutate(word = reorder(word, n)) %>%
+  ggplot(aes(word, n, fill = sentiment)) +
+    geom_col() +
+    scale_fill_manual(values = brewer.pal(8,'Dark2')[c(2,5)]) +
+    coord_flip(ylim = c(-7,7)) +
+    labs(y = "Frecuencia",
+         x = NULL,
+         title = "Reggaeton: Conteo por sentiment") +
+    theme_minimal() -> p2 
+# desplegar grafico
+grid.arrange(p1, p2, ncol = 2)
+#-------------Rock_canciones------------------
+text_Rock_canciones %>%
+    inner_join(sentiment_words) %>%
+    count(word, sentiment, sort = TRUE) %>%
+    filter(n > 2) %>%
+    mutate(n = ifelse(sentiment == "Negativo", -n, n)) %>%
+    mutate(word = reorder(word, n)) %>%
+  ggplot(aes(word, n, fill = sentiment)) +
+    geom_col() +
+    scale_fill_manual(values = brewer.pal(8,'Dark2')[c(2,5)]) +
+    coord_flip(ylim = c(-7,7)) +
+    labs(y = "Frecuencia",
+         x = NULL,
+         title = "Rock_canciones : Conteo por sentiment") +
+    theme_minimal() -> p3
+# desplegar grafico
+grid.arrange(p1, p3, ncol  = 2)
+```
+
+
+
+
+```{r, fig.width=10, fig.height=6, fig.align='center'}
+suppressMessages(suppressWarnings(library(reshape2)))  # acast
+##### viz
+par(mfrow = c(1,3), mar = c(1,1,2,1), mgp = c(1,1,1))
+# ---------- Baladas ----------
+set.seed(123)
+text_Baladas %>%
+  inner_join(sentiment_words) %>%
+  count(word, sentiment, sort = TRUE) %>%
+  acast(word ~ sentiment, value.var = "n", fill = 0) %>%
+  comparison.cloud(colors = brewer.pal(8,'Dark2')[c(2,5)], 
+                   max.words = 50, title.size = 1.5)
+title(main = "Baladas")
+# ---------- Reggaeton ----------
+set.seed(123)
+text_Reggaeton %>%
+  inner_join(sentiment_words) %>%
+  count(word, sentiment, sort = TRUE) %>%
+  acast(word ~ sentiment, value.var = "n", fill = 0) %>%
+  comparison.cloud(colors = brewer.pal(8,'Dark2')[c(2,5)], 
+                   max.words = 50, title.size = 1.5)
+title(main = "Reggaeton")
+#--------Rock_canciones---------
+set.seed(123)
+text_Rock_canciones %>%
+  inner_join(sentiment_words) %>%
+  count(word, sentiment, sort = TRUE) %>%
+  acast(word ~ sentiment, value.var = "n", fill = 0) %>%
+  comparison.cloud(colors = brewer.pal(8,'Dark2')[c(2,5)], 
+                   max.words = 50, title.size = 1.5)
+title(main = "Rock_canciones")
+```
+
+
+
+# Baladas: Bigramas
+
+Se ha usado `unnest_tokens` para tokenizar por palabras individuales.
+
+Ahora se quiere tokenizar por **secuencias de palabras**.
+
+¿Qué palabras tienden a seguir otras? ¿Qué palabras tienden a co-ocurrir juntas?
+
+
+```{r}
+##### bigramas: Ejemplo cancion Balada
+# texto
+text <- c("Quiero volar contigo ", 
+          "Muy alto en algun lugar ", 
+          "Quisiera estar contigo ", 
+          "Viendo las estrellas sobre el mar ", 
+          "Quiero encontrar otro camino ")
+# convertir a data frame
+text_df <- tibble(line = 1:length(text), text = text)
+# tokenizar en bigramas
+text_df %>% 
+  unnest_tokens(tbl = ., input = text, output = bigram, token = "ngrams", n = 2) %>%
+  head(n = 10)
+```
+
+
+```{r}
+##### importar datos
+text_Baladas <- unlist(c(read_csv("Baladas_sin_tildes.txt", col_names = FALSE, show_col_types = FALSE)))
+names(text_Baladas) <- NULL
+text_Baladas <- tibble(line = 1:length(text_Baladas), text = text_Baladas)
+```
+
+
+
+```{r}
+##### tokenizar en bigramas
+# en este caso cada token es un bigrama
+text_Baladas %>%
+  unnest_tokens(tbl = ., input = text, output = bigram, token = "ngrams", n = 2) %>%
+  filter(!is.na(bigram)) -> text_Baladas_bi  # importante!
+dim(text_Baladas_bi)
+head(text_Baladas_bi, n = 10)
+```
+
+
+
+```{r}
+###### top 10 de bigramas mas frecuentes
+# hay bigramas que no son interesantes (e.g., "de la")
+# esto motiva el uso de stop words nuevamente
+text_Baladas_bi %>%
+  count(bigram, sort = TRUE) %>%
+  head(n = 10)
+```
+
+
+```{r}
+##### omitir stop words
+text_Baladas_bi %>%
+  separate(bigram, c("word1", "word2"), sep = " ") %>%
+  filter(!grepl(pattern = '[0-9]', x = word1)) %>%
+  filter(!grepl(pattern = '[0-9]', x = word2)) %>%
+  filter(!word1 %in% stop_words_es$word) %>%
+  filter(!word2 %in% stop_words_es$word) %>%
+  mutate(word1 = chartr(old = names(replacement_list) %>% str_c(collapse = ''), 
+                       new = replacement_list %>% str_c(collapse = ''),
+                       x = word1)) %>%
+  mutate(word2 = chartr(old = names(replacement_list) %>% str_c(collapse = ''), 
+                       new = replacement_list %>% str_c(collapse = ''),
+                       x = word2)) %>%
+  filter(!is.na(word1)) %>% 
+  filter(!is.na(word2)) %>%
+  count(word1, word2, sort = TRUE) %>%
+  rename(weight = n) -> text_Baladas_bi_counts  # importante para la conformacion de la red!
+dim(text_Baladas_bi_counts)
+head(text_Baladas_bi_counts, n = 10)
+```
+
+
+```{r, fig.width=6, fig.height=6, fig.align='center'}
+##### definir una red a partir de la frecuencia (weight) de los bigramas
+# binaria, no dirigida, ponderada, simple
+# se recomienda variar el umbral del filtro y construir bigramas no consecutivos para obtener redes con mayor informacion
+suppressMessages(suppressWarnings(library(igraph)))
+g <- text_Baladas_bi_counts %>%
+  filter(weight > 2) %>%
+  graph_from_data_frame(directed = FALSE)
+# viz
+set.seed(123)
+plot(g, layout = layout_with_fr, vertex.color = 1, vertex.frame.color = 1, vertex.size = 3, vertex.label.color = 'black', vertex.label.cex = 1, vertex.label.dist = 1, main = "Umbral = 3")
+```
+
+
+
+
+```{r, fig.width=6, fig.height=6, fig.align='center'}
+##### red con un umbral diferente
+g <- text_Baladas_bi_counts %>%
+  filter(weight > 0) %>%
+  graph_from_data_frame(directed = FALSE)
+# viz
+set.seed(123)
+plot(g, layout = layout_with_kk, vertex.color = 1, vertex.frame.color = 1, vertex.size = 3, vertex.label = NA, main = "Umbral = 1")
+```
+
+
+
+```{r, fig.width=12, fig.height=6, fig.align='center'}
+##### componente conexa mas grande de la red
+g <- text_Baladas_bi_counts %>%
+  filter(weight > 0) %>%
+  graph_from_data_frame(directed = FALSE)
+# grafo inducido por la componente conexa
+V(g)$cluster <- clusters(graph = g)$membership
+gcc <- induced_subgraph(graph = g, vids = which(V(g)$cluster == which.max(clusters(graph = g)$csize)))
+par(mfrow = c(1,2), mar = c(1,1,2,1), mgp = c(1,1,1))
+# viz 1
+set.seed(123)
+plot(gcc, layout = layout_with_kk, vertex.color = 1, vertex.frame.color = 1, vertex.size = 3, vertex.label.color = 'black', vertex.label.cex = 0.9, vertex.label.dist = 1)
+# viz 2
+set.seed(123)
+plot(gcc, layout = layout_with_kk, vertex.color = adjustcolor('red4', 0.1), vertex.frame.color = 'red4', vertex.size = 2*strength(gcc), vertex.label.color = 'black', vertex.label.cex = 0.9, vertex.label.dist = 1, edge.width = 3*E(g)$weight/max(E(g)$weight))
+title(main = "Componente conexa", outer = T, line = -1)
+```
+
+
+
+
+# Baladas: Skip-grams
+
+
+```{r}
+##### skip-gram: Ejemplo cancion Bajo el Agua
+# texto
+text <- c("Quiero volar contigo ", 
+          "Muy alto en algun lugar ", 
+          "Quisiera estar contigo ", 
+          "Viendo las estrellas sobre el mar ", 
+          "Quiero encontrar otro camino ")
+# convertir a data frame
+text_df <- tibble(line = 1:length(text), text = text)
+# tokenizar en bigramas
+text_df %>% 
+  unnest_tokens(tbl = ., input = text, output = skipgram, token = "skip_ngrams", n = 2) %>%
+  head(n = 10)
+```
+
+
+
+```{r}
+##### importar datos
+text_Baladas <- unlist(c(read_csv("Baladas_sin_tildes.txt", col_names = FALSE, show_col_types = FALSE)))
+names(text_Baladas) <- NULL
+text_Baladas <- tibble(line = 1:length(text_Baladas), text = text_Baladas)
+```
+
+
+```{r}
+##### tokenizar en skip-gram
+# en este caso cada token es un unigrama o un bigrama regular o un bigrama con espaciamiento
+text_Baladas %>%
+  unnest_tokens(tbl = ., input = text, output = skipgram, token = "skip_ngrams", n = 2) %>%
+  filter(!is.na(skipgram)) -> text_Baladas_skip
+dim(text_Baladas_skip)
+head(text_Baladas_skip, n = 10)
+```
+
+
+
+
+```{r}
+##### remover unigramas
+suppressMessages(suppressWarnings(library(ngram)))
+# contar palabras en cada skip-gram
+text_Baladas_skip$num_words <- text_Baladas_skip$skipgram %>% 
+  map_int(.f = ~ wordcount(.x))
+head(text_Baladas_skip, n = 10)
+# remover unigramas
+text_Baladas_skip %<>% 
+  filter(num_words == 2) %>% 
+  select(-num_words)
+dim(text_Baladas_skip)
+head(text_Baladas_skip, n = 10)
+```
+
+
+
+```{r}
+##### omitir stop words
+text_Baladas_skip %>%
+  separate(skipgram, c("word1", "word2"), sep = " ") %>%
+  filter(!grepl(pattern = '[0-9]', x = word1)) %>%
+  filter(!grepl(pattern = '[0-9]', x = word2)) %>%
+  filter(!word1 %in% stop_words_es$word) %>%
+  filter(!word2 %in% stop_words_es$word) %>%
+  mutate(word1 = chartr(old = names(replacement_list) %>% str_c(collapse = ''), 
+                       new = replacement_list %>% str_c(collapse = ''),
+                       x = word1)) %>%
+  mutate(word2 = chartr(old = names(replacement_list) %>% str_c(collapse = ''), 
+                       new = replacement_list %>% str_c(collapse = ''),
+                       x = word2)) %>%
+  filter(!is.na(word1)) %>% 
+  filter(!is.na(word2)) %>%
+  count(word1, word2, sort = TRUE) %>%
+  rename(weight = n) -> text_Baladas_skip_counts
+dim(text_Baladas_skip_counts)
+head(text_Baladas_skip_counts, n = 10)
+```
+
+
+
+```{r, fig.width=12, fig.height=6, fig.align='center'}
+##### definir una red a partir de la frecuencia (weight) de los bigramas
+g <- text_Baladas_skip_counts %>%
+  filter(weight > 0) %>%
+  graph_from_data_frame(directed = FALSE)
+g <- igraph::simplify(g)  # importante!
+# grafo inducido por la componente conexa
+V(g)$cluster <- clusters(graph = g)$membership
+gcc <- induced_subgraph(graph = g, vids = which(V(g)$cluster == which.max(clusters(graph = g)$csize)))
+par(mfrow = c(1,2), mar = c(1,1,2,1), mgp = c(1,1,1))
+# viz 1
+set.seed(123)
+plot(gcc, layout = layout_with_fr, vertex.color = 1, vertex.frame.color = 1, vertex.size = 3, vertex.label = NA)
+# viz 2
+set.seed(123)
+plot(gcc, layout = layout_with_fr, vertex.color = adjustcolor('red4', 0.1), vertex.frame.color = 'red4', vertex.size = 2*strength(gcc), vertex.label = NA)
+title(main = "Componente conexa", outer = T, line = -1)
+```
+
+# Comparación
+
+Discursos de la ONU. 
+
+Skip-grams.
+
+Componente conexa de la red conformada con umbral 1.
+
+
+## Redes
+
+```{r, echo = F}
+##### importar datos
+text_Baladas <- suppressWarnings(unlist(c(read_csv("Baladas_sin_tildes.txt", col_names = FALSE, show_col_types = FALSE))))
+names(text_Baladas) <- NULL
+text_Baladas <- tibble(line = 1:length(text_Baladas), text = text_Baladas)
+##### tokenizar en skip-gram
+text_Baladas %>%
+  unnest_tokens(tbl = ., input = text, output = skipgram, token = "skip_ngrams", n = 2) %>%
+  filter(!is.na(skipgram)) -> text_Baladas_skip
+##### remover unigramas
+text_Baladas_skip$num_words <- text_Baladas_skip$skipgram %>% 
+  map_int(.f = ~ wordcount(.x))
+text_Baladas_skip %<>% 
+  filter(num_words == 2) %>% 
+  select(-num_words)
+##### omitir stop words
+text_Baladas_skip %>%
+  separate(skipgram, c("word1", "word2"), sep = " ") %>%
+  filter(!grepl(pattern = '[0-9]', x = word1)) %>%
+  filter(!grepl(pattern = '[0-9]', x = word2)) %>%
+  filter(!word1 %in% stop_words_es$word) %>%
+  filter(!word2 %in% stop_words_es$word) %>%
+  mutate(word1 = chartr(old = names(replacement_list) %>% str_c(collapse = ''), 
+                       new = replacement_list %>% str_c(collapse = ''),
+                       x = word1)) %>%
+  mutate(word2 = chartr(old = names(replacement_list) %>% str_c(collapse = ''), 
+                       new = replacement_list %>% str_c(collapse = ''),
+                       x = word2)) %>%
+  filter(!is.na(word1)) %>% 
+  filter(!is.na(word2)) %>%
+  count(word1, word2, sort = TRUE) %>%
+  rename(weight = n) -> text_Baladas_skip_counts
+##### definir una red a partir de la frecuencia (weight) de los bigramas
+g <- text_Baladas_skip_counts %>%
+  filter(weight > 0) %>%
+  graph_from_data_frame(directed = FALSE)
+g <- igraph::simplify(g)
+# grafo inducido por la componente conexa
+V(g)$cluster <- clusters(graph = g)$membership
+gcc_Baladas <- induced_subgraph(graph = g, vids = which(V(g)$cluster == which.max(clusters(graph = g)$csize)))
+
+```
+
+
+
+```{r, echo = F}
+##### importar datos
+text_Reggaeton <- suppressWarnings(unlist(c(read_csv("Reggaeton_proyecto_limpio_limpio.txt", col_names = FALSE, show_col_types = FALSE))))
+names(text_Reggaeton) <- NULL
+text_Reggaeton <- tibble(line = 1:length(text_Reggaeton), text = text_Reggaeton)
+##### tokenizar en skip-gram
+text_Reggaeton %>%
+  unnest_tokens(tbl = ., input = text, output = skipgram, token = "skip_ngrams", n = 2) %>%
+  filter(!is.na(skipgram)) -> text_Reggaeton_skip
+##### remover unigramas
+text_Reggaeton_skip$num_words <- text_Reggaeton_skip$skipgram %>% 
+  map_int(.f = ~ wordcount(.x))
+text_Reggaeton_skip %<>% 
+  filter(num_words == 2) %>% 
+  select(-num_words)
+##### omitir stop words
+text_Reggaeton_skip %>%
+  separate(skipgram, c("word1", "word2"), sep = " ") %>%
+  filter(!grepl(pattern = '[0-9]', x = word1)) %>%
+  filter(!grepl(pattern = '[0-9]', x = word2)) %>%
+  filter(!word1 %in% stop_words_es$word) %>%
+  filter(!word2 %in% stop_words_es$word) %>%
+  mutate(word1 = chartr(old = names(replacement_list) %>% str_c(collapse = ''), 
+                       new = replacement_list %>% str_c(collapse = ''),
+                       x = word1)) %>%
+  mutate(word2 = chartr(old = names(replacement_list) %>% str_c(collapse = ''), 
+                       new = replacement_list %>% str_c(collapse = ''),
+                       x = word2)) %>%
+  filter(!is.na(word1)) %>% 
+  filter(!is.na(word2)) %>%
+  count(word1, word2, sort = TRUE) %>%
+  rename(weight = n) -> text_Reggaeton_skip_counts
+##### definir una red a partir de la frecuencia (weight) de los bigramas
+g <- text_Reggaeton_skip_counts %>%
+  filter(weight > 0) %>%
+  graph_from_data_frame(directed = FALSE)
+g <- igraph::simplify(g)
+# grafo inducido por la componente conexa
+V(g)$cluster <- clusters(graph = g)$membership
+gcc_Reggaeton <- induced_subgraph(graph = g, vids = which(V(g)$cluster == which.max(clusters(graph = g)$csize)))
+```
+
+```{r, echo = F}
+##### importar datos
+text_Rock_canciones <- suppressWarnings(unlist(c(read_csv("Rock_canciones.txt", col_names = FALSE, show_col_types = FALSE))))
+names(text_Rock_canciones) <- NULL
+text_Rock_canciones <- tibble(line = 1:length(text_Rock_canciones), text = text_Rock_canciones)
+##### tokenizar en skip-gram
+text_Rock_canciones %>%
+  unnest_tokens(tbl = ., input = text, output = skipgram, token = "skip_ngrams", n = 2) %>%
+  filter(!is.na(skipgram)) -> text_Rock_canciones_skip
+##### remover unigramas
+text_Rock_canciones_skip$num_words <- text_Rock_canciones_skip$skipgram %>% 
+  map_int(.f = ~ wordcount(.x))
+text_Rock_canciones_skip %<>% 
+  filter(num_words == 2) %>% 
+  select(-num_words)
+##### omitir stop words
+text_Rock_canciones_skip %>%
+  separate(skipgram, c("word1", "word2"), sep = " ") %>%
+  filter(!grepl(pattern = '[0-9]', x = word1)) %>%
+  filter(!grepl(pattern = '[0-9]', x = word2)) %>%
+  filter(!word1 %in% stop_words_es$word) %>%
+  filter(!word2 %in% stop_words_es$word) %>%
+  mutate(word1 = chartr(old = names(replacement_list) %>% str_c(collapse = ''), 
+                       new = replacement_list %>% str_c(collapse = ''),
+                       x = word1)) %>%
+  mutate(word2 = chartr(old = names(replacement_list) %>% str_c(collapse = ''), 
+                       new = replacement_list %>% str_c(collapse = ''),
+                       x = word2)) %>%
+  filter(!is.na(word1)) %>% 
+  filter(!is.na(word2)) %>%
+  count(word1, word2, sort = TRUE) %>%
+  rename(weight = n) -> text_Rock_canciones_skip_counts
+##### definir una red a partir de la frecuencia (weight) de los bigramas
+g <- text_Rock_canciones_skip_counts %>%
+  filter(weight > 0) %>%
+  graph_from_data_frame(directed = FALSE)
+g <- igraph::simplify(g)
+# grafo inducido por la componente conexa
+V(g)$cluster <- clusters(graph = g)$membership
+gcc_Rock_canciones <- induced_subgraph(graph = g, vids = which(V(g)$cluster == which.max(clusters(graph = g)$csize)))
+```
+
+
+
+```{r, fig.width=12, fig.height=6, fig.align='center', echo = F}
+par(mfrow = c(1,3), mar = c(1,1,2,1), mgp = c(1,1,1))
+# viz 1
+set.seed(123)
+plot(gcc_Baladas, layout = layout_with_kk, vertex.color = adjustcolor('red4', 0.1), vertex.frame.color = 'red4', vertex.size = 1.6*strength(gcc_Baladas), vertex.label = NA, main = "Baladas")
+# viz 2
+set.seed(123)
+plot(gcc_Reggaeton, layout = layout_with_kk, vertex.color = adjustcolor('blue4', 0.1), vertex.frame.color = 'blue4', vertex.size = 1.6*strength(gcc_Reggaeton), vertex.label = NA, main = "Reggaeton")
+# viz 3
+set.seed(123)
+plot(gcc_Rock_canciones, layout = layout_with_kk, vertex.color = adjustcolor('purple4', 0.1), vertex.frame.color = 'purple4', vertex.size = 1.6*strength(gcc_Rock_canciones), vertex.label = NA, main = "Rock_canciones")
+```
+
+
+
+
+```{r, fig.width=12, fig.height=6, fig.align='center', echo = F}
+par(mfrow = c(1,3), mar = c(1,1,2,1), mgp = c(1,1,1))
+# viz 1
+set.seed(123)
+plot(gcc_Baladas, layout = layout_with_kk, vertex.color = adjustcolor('red4', 0.1), vertex.frame.color = 'red4', vertex.size = 1.6*strength(gcc_Baladas), vertex.label = NA, main = "Baladas")
+# viz 2
+set.seed(123)
+plot(gcc_Reggaeton, layout = layout_with_kk, vertex.color = adjustcolor('blue4', 0.1), vertex.frame.color = 'blue4', vertex.size = 1.6*strength(gcc_Reggaeton), vertex.label = NA, main = "Reggaeton")
+# viz 3
+set.seed(123)
+plot(gcc_Rock_canciones, layout = layout_with_kk, vertex.color = adjustcolor('purple4', 0.1), vertex.frame.color = 'purple4', vertex.size = 1.6*strength(gcc_Rock_canciones), vertex.label = NA, main = "Rock_canciones")
+
+```
+
+
+
+```{r, fig.width=12, fig.height=6, fig.align='center', echo = F}
+par(mfrow = c(1,3), mar = c(1,1,2,1), mgp = c(1,1,1))
+# viz 1
+set.seed(123)
+plot(gcc_Baladas, layout = layout_with_kk, vertex.color = adjustcolor('red4', 0.1), vertex.frame.color = 'red4', vertex.size = 1.6*strength(gcc_Baladas), vertex.label = NA, main = "Baladas")
+# viz 2
+set.seed(123)
+plot(gcc_Reggaeton, layout = layout_with_kk, vertex.color = adjustcolor('blue4', 0.1), vertex.frame.color = 'blue4', vertex.size = 1.6*strength(gcc_Reggaeton), vertex.label = NA, main = "Reggaeton")
+# viz 3
+set.seed(123)
+plot(gcc_Rock_canciones, layout = layout_with_kk, vertex.color = adjustcolor('purple4', 0.1), vertex.frame.color = 'purple4', vertex.size = 1.6*strength(gcc_Rock_canciones), vertex.label = NA, main = "Rock_canciones")
+```
+
+
+
+
+
+## Paralabras más importantes
+
+### Baladas: Top 10 {-}
+
+```{r, echo = F}
+centralidad_Baladas <- tibble(word = V(gcc_Baladas)$name, eigen = eigen_centrality(gcc_Baladas, scale = T)$vector)
+centralidad_Baladas %>%
+  arrange(desc(eigen)) %>%
+  head(n = 10)
+```
+
+
+### Reggaeton: Top 10 {-}
+
+```{r, echo = F}
+centralidad_Reggaeton <- tibble(word = V(gcc_Reggaeton)$name, eigen = eigen_centrality(gcc_Reggaeton, scale = T)$vector)
+centralidad_Reggaeton %>%
+  arrange(desc(eigen)) %>%
+  head(n = 10)
+```
+
+## Rock_canciones : Top 10 {-}
+
+```{r, echo = F}
+centralidad_Rock_canciones <- tibble(word = V(gcc_Rock_canciones)$name, eigen = eigen_centrality(gcc_Rock_canciones, scale = T)$vector)
+centralidad_Rock_canciones %>%
+  arrange(desc(eigen)) %>%
+  head(n = 10)
+```
+
+
+
+
+
+## Agrupamiento
+
+```{r, echo = F}
+kc_Baladas <- igraph::cluster_fast_greedy(gcc_Baladas)
+kc_Reggaeton <- igraph::cluster_fast_greedy(gcc_Reggaeton)
+kc_Rock_canciones <- igraph:: cluster_fast_greedy(gcc_Rock_canciones)
+tab <- cbind(
+  c(length(kc_Baladas), min(sizes(kc_Baladas)), max(sizes(kc_Baladas))),
+  c(length(kc_Reggaeton), min(sizes(kc_Reggaeton)), max(sizes(kc_Reggaeton))),
+  c(length(kc_Rock_canciones),min(sizes(kc_Rock_canciones)),max(sizes(kc_Rock_canciones)))
+)
+rownames(tab) <- c("Tamaño partición", "Tamaño grupo menor", "Tamaño grupo mayor")
+colnames(tab) <- c("Baladas","Reggaeton","Rock_canciones")
+round(tab, 4)                                     
+```
+
+```{r, fig.width=12, fig.height=6, fig.align='center', echo = F}
+suppressMessages(suppressWarnings(library(RColorBrewer)))
+cols <- c(brewer.pal(9,"Set1")[1:9],brewer.pal(8,"Set2")[1:7],brewer.pal(8,"Set2")[1:7],brewer.pal(12,"Set3")[1:3])
+par(mfrow = c(1,2), mar = c(1,1,2,1), mgp = c(1,1,1))
+# viz 1
+set.seed(123)
+plot(gcc_Baladas, layout = layout_with_kk, vertex.color = adjustcolor(cols[kc_Baladas$membership], 0.1), vertex.frame.color = cols[kc_Baladas$membership], vertex.size = 1.6*strength(gcc_Baladas), vertex.label = NA, main = "Baladas")
+# viz 2
+set.seed(123)
+plot(gcc_Reggaeton, layout = layout_with_kk, vertex.color = adjustcolor(cols[kc_Reggaeton$membership], 0.1), vertex.frame.color = cols[kc_Reggaeton$membership], vertex.size = 1.6*strength(gcc_Reggaeton), vertex.label = NA, main = "Reggaeton")
+#viz 3
+set.seed(123)
+plot(gcc_Rock_canciones, layout = layout_with_kk, vertex.color = adjustcolor(cols[kc_Rock_canciones$membership], 0.1), vertex.frame.color = cols[kc_Rock_canciones$membership], vertex.size = 1.6*strength(gcc_Rock_canciones), vertex.label = NA, main = "Rock_canciones")
+```
+
+### Baladas: Top 5 grupo mayor {-}
+
+```{r, echo=F}
+V(gcc_Baladas)$membership <- kc_Baladas$membership
+grupos_Baladas<- tibble(word = V(gcc_Baladas) %>% names(), cluster = V(gcc_Baladas)$membership, eigen = eigen_centrality(gcc_Baladas, scale = T)$vector)
+grupos_Baladas %>%
+  filter(cluster == which.max(table(kc_Baladas$membership))) %>%
+  arrange(desc(eigen)) %>%
+  head(n = 5)
+```
+### Reggaeton: Top 5 grupo mayor {-}
+
+```{r, echo=F}
+V(gcc_Reggaeton)$membership <- kc_Reggaeton$membership
+grupos_Reggaeton <- tibble(word = V(gcc_Reggaeton) %>% names(), cluster = V(gcc_Reggaeton)$membership, eigen = eigen_centrality(gcc_Reggaeton, scale = T)$vector)
+grupos_Reggaeton %>%
+  filter(cluster == which.max(table(kc_Reggaeton$membership))) %>%
+  arrange(desc(eigen)) %>%
+  head(n = 5)
+```
+
+### Rock_canciones: Top 5 grupo mayor {-}
+```{r, echo=F}
+V(gcc_Rock_canciones)$membership <- kc_Rock_canciones$membership
+grupos_Rock_canciones <- tibble(word = V(gcc_Rock_canciones) %>% names(), cluster = V(gcc_Rock_canciones)$membership, eigen = eigen_centrality(gcc_Rock_canciones, scale = T)$vector)
+grupos_Rock_canciones %>%
+  filter(cluster == which.max(table(kc_Rock_canciones$membership))) %>%
+  arrange(desc(eigen)) %>%
+  head(n = 5)
+```
+
+
+
+
