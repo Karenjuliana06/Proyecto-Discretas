@@ -96,7 +96,7 @@ suppressMessages(suppressWarnings(library(tidyverse)))
 # warnings debido a caracteres no UTF-8 o vacios ("")
 # UTF-8 (8-bit Unicode Transformation Format) es un formato de codificación de caracteres 
 # capaz de codificar todos los code points validos en Unicode
-text_Baladas <- read_csv("Baladas_sin_tildes.txt", col_names = FALSE, show_col_types = FALSE)
+text_Baladas <- read_csv("baladas.txt", col_names = FALSE, show_col_types = FALSE)
 class(text_Baladas)
 text_Baladas <- c(text_Baladas)
 class(text_Baladas)
@@ -105,7 +105,7 @@ class(text_Baladas)
 names(text_Baladas) <- NULL  # importante!
 head(text_Baladas, n = 3)
 # Reggaeton
-text_Reggaeton <- unlist(c(read_csv("Reggaeton_proyecto_limpio_limpio.txt", col_names = FALSE, show_col_types = FALSE)))
+text_Reggaeton <- unlist(c(read_csv("Reggaeton_proyecto.txt", col_names = FALSE, show_col_types = FALSE)))
 names(text_Reggaeton) <- NULL
 # Rock 
 text_Rock_canciones <- unlist(c(read_csv("Rock_canciones.txt", col_names = FALSE, show_col_types = FALSE)))
@@ -235,7 +235,7 @@ table(stop_words$lexicon)
 #   https://github.com/stopwords-iso/stopwords-es
 #   de tm::stopwords("spanish")
 # se conserva el mismo formato de los diccionarios en tidytext
-stop_words_es <- tibble(word = unlist(c(read.table("Stop_words.txt", quote="\"", comment.char=""))), lexicon = "custom")
+stop_words_es <- tibble(word = unlist(c(read.table("Stopwords.txt", quote="\"", comment.char=""))), lexicon = "custom")
 dim(stop_words_es)
 head(stop_words_es, n = 10)
 ```
@@ -318,7 +318,7 @@ suppressMessages(suppressWarnings(library(gridExtra)))
 # ---------- Baladas ----------
 text_Baladas %>%
   count(word, sort = TRUE) %>%
-  filter(n > 7) %>%
+  filter(n > 10) %>%
   mutate(word = reorder(word, n)) %>%
   ggplot(aes(x = word, y = n)) +
     theme_light() + 
@@ -473,7 +473,7 @@ Caveats:
 # https://www.kaggle.com/datasets/rtatman/sentiment-lexicons-for-81-languages
 positive_words <- read_csv("Positive_words.txt", col_names = "word", show_col_types = FALSE) %>%
   mutate(sentiment = "Positivo")
-negative_words <- read_csv("Negative_words.txt", col_names = "word", show_col_types = FALSE) %>%
+negative_words <- read_csv("Negativewords.txt", col_names = "word", show_col_types = FALSE) %>%
   mutate(sentiment = "Negativo")
 sentiment_words <- bind_rows(positive_words, negative_words)
 # comparacion de diccionarios
@@ -604,7 +604,7 @@ text_df %>%
 
 ```{r}
 ##### importar datos
-text_Baladas <- unlist(c(read_csv("Baladas_sin_tildes.txt", col_names = FALSE, show_col_types = FALSE)))
+text_Baladas <- unlist(c(read_csv("baladas.txt", col_names = FALSE, show_col_types = FALSE)))
 names(text_Baladas) <- NULL
 text_Baladas <- tibble(line = 1:length(text_Baladas), text = text_Baladas)
 ```
@@ -728,7 +728,7 @@ text_df %>%
 
 ```{r}
 ##### importar datos
-text_Baladas <- unlist(c(read_csv("Baladas_sin_tildes.txt", col_names = FALSE, show_col_types = FALSE)))
+text_Baladas <- unlist(c(read_csv("baladas.txt", col_names = FALSE, show_col_types = FALSE)))
 names(text_Baladas) <- NULL
 text_Baladas <- tibble(line = 1:length(text_Baladas), text = text_Baladas)
 ```
@@ -820,7 +820,7 @@ Componente conexa de la red conformada con umbral 1.
 
 ```{r, echo = F}
 ##### importar datos
-text_Baladas <- suppressWarnings(unlist(c(read_csv("Baladas_sin_tildes.txt", col_names = FALSE, show_col_types = FALSE))))
+text_Baladas <- suppressWarnings(unlist(c(read_csv("baladas.txt", col_names = FALSE, show_col_types = FALSE))))
 names(text_Baladas) <- NULL
 text_Baladas <- tibble(line = 1:length(text_Baladas), text = text_Baladas)
 ##### tokenizar en skip-gram
@@ -865,7 +865,7 @@ gcc_Baladas <- induced_subgraph(graph = g, vids = which(V(g)$cluster == which.ma
 
 ```{r, echo = F}
 ##### importar datos
-text_Reggaeton <- suppressWarnings(unlist(c(read_csv("Reggaeton_proyecto_limpio_limpio.txt", col_names = FALSE, show_col_types = FALSE))))
+text_Reggaeton <- suppressWarnings(unlist(c(read_csv("Reggaeton_proyecto.txt", col_names = FALSE, show_col_types = FALSE))))
 names(text_Reggaeton) <- NULL
 text_Reggaeton <- tibble(line = 1:length(text_Reggaeton), text = text_Reggaeton)
 ##### tokenizar en skip-gram
