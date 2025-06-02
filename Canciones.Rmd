@@ -477,14 +477,15 @@ title(main = "Salsa_canciones")
 ##### frecuencias relativas de la palabras
 bind_rows(mutate(.data = text_Baladas, author = "Baladas"),
                        mutate(.data = text_Reggaeton, author = "Reggaeton"),
-                        mutate(.data = text_Rock_canciones, author = "Rock_canciones")) %>%
+                        mutate(.data = text_Rock_canciones, author = "Rock_canciones"),
+                          mutate(.data = text_Salsa_canciones, author = "Salsa_canciones")) %>%
   count(author, word) %>%
   group_by(author) %>%
   mutate(proportion = n/sum(n)) %>%
   select(-n) %>%
   spread(author, proportion, fill = 0) -> frec  # importante!
 frec %<>% 
-  select(word, Baladas, Reggaeton, Rock_canciones)
+  select(word, Baladas, Reggaeton, Rock_canciones, Salsa_canciones)
 dim(frec)
 head(frec, n = 10)
 ```
@@ -495,7 +496,7 @@ head(frec, n = 10)
 # orden anidado respecto a Baladas, Reggaeton y Rock
 frec %>%
   filter(Baladas !=0, Reggaeton != 0, Rock_canciones != 0) %>%
-  arrange(desc(Baladas), desc(Reggaeton), desc(Rock_canciones)) -> frec_comun
+  arrange(desc(Baladas), desc(Reggaeton), desc(Rock_canciones), desc(Salsa_canciones)) -> frec_comun
 dim(frec_comun)
 head(frec_comun, n = 10)
 ```
@@ -515,6 +516,7 @@ dim(frec_comun)[1]/dim(frec)[1]
 cor.test(x = frec$Baladas, y = frec$Baladas)
 cor.test(x = frec_comun$Reggaeton, y = frec_comun$Reggaeton)
 cor.test(x = frec_comun$Rock_canciones, y = frec_comun$Rock_canciones)
+cor.test(x = frec_comun$Salsa_canciones, y = frec_comun$Salsa_canciones)
 ```
 
 
