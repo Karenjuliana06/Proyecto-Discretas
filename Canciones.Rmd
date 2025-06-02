@@ -424,6 +424,20 @@ text_Rock_canciones %>%
     ggtitle(label = 'Rock_canciones: Conteo de palabras') -> p3
 # desplegar grafico 
 grid.arrange(p1, p2, p3, ncol = 3)
+#-----------Salsa_canciones--------
+text_Salsa_canciones %>%
+  count(word, sort = TRUE) %>%
+  filter(n > 7) %>%
+  mutate(word = reorder(word,n)) %>%
+  ggplot(aes(x = word, y = n)) +
+    theme_light()+
+    geom_col(fill= 'yellow4', alpha = 0.8)+
+    xlab(NULL)+
+    ylab("Frecuencia")+
+    coord_flip()+
+    ggtitle(label = 'Salsa_canciones: Conteo de palabras') -> p4
+# desplegar grafico 
+grid.arrange(p1, p2, p3, p4 )
 ```
 
 
@@ -450,6 +464,12 @@ text_Rock_canciones %>%
   count(word, sort = TRUE) %>%
   with(wordcloud(words = word, freq = n, max.words = 20, colors = 'purple4'))
 title(main = "Rock_canciones")
+#-------------Salsa_canciones-----------
+set.seed(123)
+text_Salsa_canciones %>%
+  count(word, sort = TRUE) %>%
+  with(wordcloud(words = word, freq = n, max.words = 20, colors = 'yellow4'))
+title(main = "Salsa_canciones")
 ```
 
 
