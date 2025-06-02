@@ -887,7 +887,7 @@ text_Rock_canciones <- tibble(line = 1:length(text_Rock_canciones), text = text_
 # en este caso cada token es un unigrama o un bigrama regular o un bigrama con espaciamiento
 text_Rock_canciones %>%
   unnest_tokens(tbl = ., input = text, output = skipgram, token = "skip_ngrams", n = 2) %>%
-  filter(!is.na(skipgram)) -> text_Baladas_skip
+  filter(!is.na(skipgram)) -> text_Rock_canciones_skip
 dim(text_Rock_canciones_skip)
 head(text_Rock_canciones_skip, n = 10)
 ```
@@ -899,22 +899,22 @@ head(text_Rock_canciones_skip, n = 10)
 ##### remover unigramas
 suppressMessages(suppressWarnings(library(ngram)))
 # contar palabras en cada skip-gram
-text_Baladas_skip$num_words <- text_Baladas_skip$skipgram %>% 
+text_Rock_canciones_skip$num_words <- text_Rock_canciones_skip$skipgram %>% 
   map_int(.f = ~ wordcount(.x))
-head(text_Baladas_skip, n = 10)
+head(text_Rock_canciones_skip, n = 10)
 # remover unigramas
-text_Baladas_skip %<>% 
+text_Rock_canciones_skip %<>% 
   filter(num_words == 2) %>% 
   select(-num_words)
-dim(text_Baladas_skip)
-head(text_Baladas_skip, n = 10)
+dim(text_Rock_canciones_skip)
+head(text_Rock_canciones_skip, n = 10)
 ```
 
 
 
 ```{r}
 ##### omitir stop words
-text_Baladas_skip %>%
+text_Rock_canciones_skip %>%
   separate(skipgram, c("word1", "word2"), sep = " ") %>%
   filter(!grepl(pattern = '[0-9]', x = word1)) %>%
   filter(!grepl(pattern = '[0-9]', x = word2)) %>%
@@ -929,16 +929,16 @@ text_Baladas_skip %>%
   filter(!is.na(word1)) %>% 
   filter(!is.na(word2)) %>%
   count(word1, word2, sort = TRUE) %>%
-  rename(weight = n) -> text_Baladas_skip_counts
-dim(text_Baladas_skip_counts)
-head(text_Baladas_skip_counts, n = 10)
+  rename(weight = n) -> text_Rock_canciones_skip_counts
+dim(text_Rock_canciones_skip_counts)
+head(text_Rock-canciones_skip_counts, n = 10)
 ```
 
 
 
 ```{r, fig.width=12, fig.height=6, fig.align='center'}
 ##### definir una red a partir de la frecuencia (weight) de los bigramas
-g <- text_Baladas_skip_counts %>%
+g <- text_Rock_canciones_skip_counts %>%
   filter(weight > 0) %>%
   graph_from_data_frame(directed = FALSE)
 g <- igraph::simplify(g)  # importante!
@@ -1095,6 +1095,47 @@ V(g)$cluster <- clusters(graph = g)$membership
 gcc_Rock_canciones <- induced_subgraph(graph = g, vids = which(V(g)$cluster == which.max(clusters(graph = g)$csize)))
 ```
 
+```{r, echo = F}
+##### importar datos
+text_Salsa_canciones <- suppressWarnings(unlist(c(read_csv("Salsa_canciones.txt", col_names = FALSE, show_col_types = FALSE))))
+names(text_Salsa_canciones) <- NULL
+text_Salsa_canciones <- tibble(line = 1:length(text_Salsa_canciones), text = text_Salsa_canciones)
+##### tokenizar en skip-gram
+text_Salsa_canciones %>%
+  unnest_tokens(tbl = ., input = text, output = skipgram, token = "skip_ngrams", n = 2) %>%
+  filter(!is.na(skipgram)) -> text_Salsa_canciones_skip
+##### remover unigramas
+text_Salsa_canciones_skip$num_words <- text_Salsa_canciones_skip$skipgram %>% 
+  map_int(.f = ~ wordcount(.x))
+text_Salsa_canciones_skip %<>% 
+  filter(num_words == 2) %>% 
+  select(-num_words)
+##### omitir stop words
+text_Salsa_canciones_skip %>%
+  separate(skipgram, c("word1", "word2"), sep = " ") %>%
+  filter(!grepl(pattern = '[0-9]', x = word1)) %>%
+  filter(!grepl(pattern = '[0-9]', x = word2)) %>%
+  filter(!word1 %in% stop_words_es$word) %>%
+  filter(!word2 %in% stop_words_es$word) %>%
+  mutate(word1 = chartr(old = names(replacement_list) %>% str_c(collapse = ''), 
+                       new = replacement_list %>% str_c(collapse = ''),
+                       x = word1)) %>%
+  mutate(word2 = chartr(old = names(replacement_list) %>% str_c(collapse = ''), 
+                       new = replacement_list %>% str_c(collapse = ''),
+                       x = word2)) %>%
+  filter(!is.na(word1)) %>% 
+  filter(!is.na(word2)) %>%
+  count(word1, word2, sort = TRUE) %>%
+  rename(weight = n) -> text_Salsa_canciones_skip_counts
+##### definir una red a partir de la frecuencia (weight) de los bigramas
+g <- text_Salsa_canciones_skip_counts %>%
+  filter(weight > 0) %>%
+  graph_from_data_frame(directed = FALSE)
+g <- igraph::simplify(g)
+# grafo inducido por la componente conexa
+V(g)$cluster <- clusters(graph = g)$membership
+gcc_Salsa_canciones <- induced_subgraph(graph = g, vids = which(V(g)$cluster == which.max(clusters(graph = g)$csize)))
+```
 
 
 ```{r, fig.width=12, fig.height=6, fig.align='center', echo = F}
@@ -1108,6 +1149,9 @@ plot(gcc_Reggaeton, layout = layout_with_kk, vertex.color = adjustcolor('blue4',
 # viz 3
 set.seed(123)
 plot(gcc_Rock_canciones, layout = layout_with_kk, vertex.color = adjustcolor('purple4', 0.1), vertex.frame.color = 'purple4', vertex.size = 1.6*strength(gcc_Rock_canciones), vertex.label = NA, main = "Rock_canciones")
+# viz 4
+set.seed(1234)
+plot(gcc_Salsa_canciones, layout = layout_with_kk, vertex.color = adjustcolor('yellow4', 0.1), vertex.frame.color = 'yellow4', vertex.size = 1.6*strength(gcc_Salsa_canciones), vertex.label = NA, main = "Salsa_canciones")
 ```
 
 
