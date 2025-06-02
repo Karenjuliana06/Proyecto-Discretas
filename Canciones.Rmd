@@ -1168,6 +1168,9 @@ plot(gcc_Reggaeton, layout = layout_with_kk, vertex.color = adjustcolor('blue4',
 # viz 3
 set.seed(123)
 plot(gcc_Rock_canciones, layout = layout_with_kk, vertex.color = adjustcolor('purple4', 0.1), vertex.frame.color = 'purple4', vertex.size = 1.6*strength(gcc_Rock_canciones), vertex.label = NA, main = "Rock_canciones")
+# viz 4
+set.seed(1234)
+plot(gcc_Salsa_canciones, layout = layout_with_kk, vertex.color = adjustcolor('yellow4', 0.1), vertex.frame.color = 'yellow4', vertex.size = 1.6*strength(gcc_Salsa_canciones), vertex.label = NA, main = "Salsa_canciones")
 
 ```
 
@@ -1184,6 +1187,9 @@ plot(gcc_Reggaeton, layout = layout_with_kk, vertex.color = adjustcolor('blue4',
 # viz 3
 set.seed(123)
 plot(gcc_Rock_canciones, layout = layout_with_kk, vertex.color = adjustcolor('purple4', 0.1), vertex.frame.color = 'purple4', vertex.size = 1.6*strength(gcc_Rock_canciones), vertex.label = NA, main = "Rock_canciones")
+# viz 4
+set.seed(1234)
+plot(gcc_Salsa_canciones, layout = layout_with_kk, vertex.color = adjustcolor('yellow4', 0.1), vertex.frame.color = 'yellow4', vertex.size = 1.6*strength(gcc_Salsa_canciones), vertex.label = NA, main = "Salsa_canciones")
 ```
 
 
