@@ -703,13 +703,28 @@ Ahora se quiere tokenizar por **secuencias de palabras**.
 
 
 ```{r}
-##### bigramas: Ejemplo cancion Balada
+##### bigramas: Ejemplo cancion Rock_canciones
 # texto
-text <- c("Quiero volar contigo ", 
-          "Muy alto en algun lugar ", 
-          "Quisiera estar contigo ", 
-          "Viendo las estrellas sobre el mar ", 
-          "Quiero encontrar otro camino ")
+text <- c("Préstame tu peine",
+          "Y péiname el alma",
+          "Desenrédame",
+          "Fuera de este mundo",
+          "Dime que no estoy",
+          "Soñándote",
+          "Enséñame",
+          "De qué estamos hechos",
+          "Que quiero orbitar planetas",
+          "Hasta ver uno vació",
+          "Que quiero irme a vivir",
+          "Pero que sea contigo",
+          "Viento",
+          "Amárranos",
+          "Tiempo",
+          "Detente muchos años",
+          "Viento",
+          "Amárranos",
+          "Tiempo",
+          "Detente muchos años")
 # convertir a data frame
 text_df <- tibble(line = 1:length(text), text = text)
 # tokenizar en bigramas
@@ -721,9 +736,10 @@ text_df %>%
 
 ```{r}
 ##### importar datos
-text_Baladas <- unlist(c(read_csv("baladas.txt", col_names = FALSE, show_col_types = FALSE)))
-names(text_Baladas) <- NULL
-text_Baladas <- tibble(line = 1:length(text_Baladas), text = text_Baladas)
+text_Rock_canciones <- unlist(c(read_csv("Rock_canciones.txt", col_names = FALSE, show_col_types = FALSE)))
+names(text_Rock_canciones) <- NULL
+text_Rock_canciones <- tibble(line = 1:length(text_Rock_canciones), text = text_Rock_canciones)
+
 ```
 
 
@@ -731,11 +747,11 @@ text_Baladas <- tibble(line = 1:length(text_Baladas), text = text_Baladas)
 ```{r}
 ##### tokenizar en bigramas
 # en este caso cada token es un bigrama
-text_Baladas %>%
+text_Rock_canciones %>%
   unnest_tokens(tbl = ., input = text, output = bigram, token = "ngrams", n = 2) %>%
   filter(!is.na(bigram)) -> text_Baladas_bi  # importante!
-dim(text_Baladas_bi)
-head(text_Baladas_bi, n = 10)
+dim(text_Rock_canciones_bi)
+head(text_Rock_canciones_bi, n = 10)
 ```
 
 
@@ -744,7 +760,7 @@ head(text_Baladas_bi, n = 10)
 ###### top 10 de bigramas mas frecuentes
 # hay bigramas que no son interesantes (e.g., "de la")
 # esto motiva el uso de stop words nuevamente
-text_Baladas_bi %>%
+text_Rock_canciones_bi %>%
   count(bigram, sort = TRUE) %>%
   head(n = 10)
 ```
@@ -752,7 +768,7 @@ text_Baladas_bi %>%
 
 ```{r}
 ##### omitir stop words
-text_Baladas_bi %>%
+text_Rock_canciones_bi %>%
   separate(bigram, c("word1", "word2"), sep = " ") %>%
   filter(!grepl(pattern = '[0-9]', x = word1)) %>%
   filter(!grepl(pattern = '[0-9]', x = word2)) %>%
@@ -767,9 +783,9 @@ text_Baladas_bi %>%
   filter(!is.na(word1)) %>% 
   filter(!is.na(word2)) %>%
   count(word1, word2, sort = TRUE) %>%
-  rename(weight = n) -> text_Baladas_bi_counts  # importante para la conformacion de la red!
-dim(text_Baladas_bi_counts)
-head(text_Baladas_bi_counts, n = 10)
+  rename(weight = n) -> text_Rock_canciones_bi_counts  # importante para la conformacion de la red!
+dim(text_Rock_canciones_bi_counts)
+head(text_Rock_canciones_bi_counts, n = 10)
 ```
 
 
@@ -778,7 +794,7 @@ head(text_Baladas_bi_counts, n = 10)
 # binaria, no dirigida, ponderada, simple
 # se recomienda variar el umbral del filtro y construir bigramas no consecutivos para obtener redes con mayor informacion
 suppressMessages(suppressWarnings(library(igraph)))
-g <- text_Baladas_bi_counts %>%
+g <- text_Rock_canciones_bi_counts %>%
   filter(weight > 2) %>%
   graph_from_data_frame(directed = FALSE)
 # viz
@@ -791,7 +807,7 @@ plot(g, layout = layout_with_fr, vertex.color = 1, vertex.frame.color = 1, verte
 
 ```{r, fig.width=6, fig.height=6, fig.align='center'}
 ##### red con un umbral diferente
-g <- text_Baladas_bi_counts %>%
+g <- text_Rock_canciones_bi_counts %>%
   filter(weight > 0) %>%
   graph_from_data_frame(directed = FALSE)
 # viz
@@ -803,7 +819,7 @@ plot(g, layout = layout_with_kk, vertex.color = 1, vertex.frame.color = 1, verte
 
 ```{r, fig.width=12, fig.height=6, fig.align='center'}
 ##### componente conexa mas grande de la red
-g <- text_Baladas_bi_counts %>%
+g <- text_Rock_canciones_bi_counts %>%
   filter(weight > 0) %>%
   graph_from_data_frame(directed = FALSE)
 # grafo inducido por la componente conexa
@@ -826,13 +842,28 @@ title(main = "Componente conexa", outer = T, line = -1)
 
 
 ```{r}
-##### skip-gram: Ejemplo cancion Bajo el Agua
+##### skip-gram: Ejemplo cancion Viento_Caifanes
 # texto
-text <- c("Quiero volar contigo ", 
-          "Muy alto en algun lugar ", 
-          "Quisiera estar contigo ", 
-          "Viendo las estrellas sobre el mar ", 
-          "Quiero encontrar otro camino ")
+text <- c("Préstame tu peine",
+          "Y péiname el alma",
+          "Desenrédame",
+          "Fuera de este mundo",
+          "Dime que no estoy",
+          "Soñándote",
+          "Enséñame",
+          "De qué estamos hechos",
+          "Que quiero orbitar planetas",
+          "Hasta ver uno vació",
+          "Que quiero irme a vivir",
+          "Pero que sea contigo",
+          "Viento",
+          "Amárranos",
+          "Tiempo",
+          "Detente muchos años",
+          "Viento",
+          "Amárranos",
+          "Tiempo",
+          "Detente muchos años")
 # convertir a data frame
 text_df <- tibble(line = 1:length(text), text = text)
 # tokenizar en bigramas
@@ -845,20 +876,20 @@ text_df %>%
 
 ```{r}
 ##### importar datos
-text_Baladas <- unlist(c(read_csv("baladas.txt", col_names = FALSE, show_col_types = FALSE)))
-names(text_Baladas) <- NULL
-text_Baladas <- tibble(line = 1:length(text_Baladas), text = text_Baladas)
+text_Rock_canciones <- unlist(c(read_csv("Rock_canciones.txt", col_names = FALSE, show_col_types = FALSE)))
+names(text_Rock_canciones) <- NULL
+text_Rock_canciones <- tibble(line = 1:length(text_Rock_canciones), text = text_Rock_canciones)
 ```
 
 
 ```{r}
 ##### tokenizar en skip-gram
 # en este caso cada token es un unigrama o un bigrama regular o un bigrama con espaciamiento
-text_Baladas %>%
+text_Rock_canciones %>%
   unnest_tokens(tbl = ., input = text, output = skipgram, token = "skip_ngrams", n = 2) %>%
   filter(!is.na(skipgram)) -> text_Baladas_skip
-dim(text_Baladas_skip)
-head(text_Baladas_skip, n = 10)
+dim(text_Rock_canciones_skip)
+head(text_Rock_canciones_skip, n = 10)
 ```
 
 
