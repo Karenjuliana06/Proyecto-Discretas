@@ -110,6 +110,9 @@ names(text_Reggaeton) <- NULL
 # Rock 
 text_Rock_canciones <- unlist(c(read_csv("Rock_canciones.txt", col_names = FALSE, show_col_types = FALSE)))
 names(text_Rock_canciones) <- NULL
+# Salsa 
+text_Salsa_canciones <- unlist(c(read_csv("Salsa_canciones.txt", col_names = FALSE, show_col_types = FALSE)))
+names(text_Salsa_canciones) <- NULL
 ```
 
 
