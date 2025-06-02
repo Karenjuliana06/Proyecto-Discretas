@@ -240,6 +240,10 @@ text_Reggaeton %>%
 text_Rock_canciones %>%
     filter(grepl(pattern = '[0-9]', x = word)) %>%
     count(word, sort = TRUE)
+# ------------Salsa_canciones-----------
+text_Salsa_canciones %>%
+    filter(grepl(pattern = '[0-9]', x = word)) %>%
+    count(word, sort = TRUE)
 ```
 
 ```{r}
@@ -256,6 +260,10 @@ dim(text_Reggaeton)
 text_Rock_canciones %<>%
   filter(!grepl(pattern = '[0-9]', x = word))
 dim(text_Rock_canciones)
+# -----------Salsa_canciones-----
+text_Salsa_canciones %<>%
+  filter(!grepl(pattern = '[0-9]', x = word))
+dim(text_Salsa_canciones)
 ```
 
 
@@ -304,6 +312,11 @@ text_Rock_canciones %<>%
     anti_join(x = . , y = stop_words_es)
 dim(text_Rock_canciones)
 head(text_Rock_canciones, n = 10)
+#-----------Salsa_canciones------
+text_Salsa_canciones %<>%
+    anti_join(x = . , y = stop_words_es)
+dim(text_Salsa_canciones)
+head(text_Salsa_canciones, n = 10)
 ```
 
 
@@ -332,6 +345,13 @@ text_Rock_canciones %<>%
                        x = word))
 dim(text_Rock_canciones)
 head(text_Rock_canciones, n= 10)
+#-----------------Salsa_canciones-------------
+text_Salsa_canciones %<>%
+  mutate(word = chartr(old = names(replacement_list)%>% str_c(collapse = ''),
+                       new = replacement_list %>% str_c(collapse = ''),
+                       x = word))
+dim(text_Salsa_canciones)
+head(text_Salsa_canciones, n= 10)
 ```
 
 
@@ -351,6 +371,10 @@ text_Reggaeton%>%
   head(n = 10)
 #------------Rock_canciones-------------
 text_Rock_canciones%>%
+  count(word, sort = TRUE) %>%
+  head(n = 10)
+#------------Salsa_canciones-------------
+text_Salsa_canciones%>%
   count(word, sort = TRUE) %>%
   head(n = 10)
 ```
