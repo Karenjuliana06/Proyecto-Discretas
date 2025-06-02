@@ -163,6 +163,8 @@ head(text_Baladas, n = 3)
 text_Reggaeton<- tibble(line = 1:length(text_Reggaeton), text = text_Reggaeton)
 # Rock canciones 
 text_Rock_canciones<- tibble(line = 1:length(text_Rock_canciones), text = text_Rock_canciones)
+# Salsa canciones 
+text_Salsa_canciones<- tibble(line = 1:length(text_Salsa_canciones), text = text_Salsa_canciones)
 ```
 
 
@@ -203,6 +205,12 @@ text_Rock_canciones%<>%
     filter(!is.na(word))
 dim(text_Rock_canciones)
 head(text_Rock_canciones, n = 10)
+# -----------Salsa_canciones-------
+text_Salsa_canciones%<>%
+    unnest_tokens(input = text, output = word) %>%
+    filter(!is.na(word))
+dim(text_Salsa_canciones)
+head(text_Salsa_canciones, n = 10)
 ```
 
 # Normalización del texto
