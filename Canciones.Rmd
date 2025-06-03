@@ -710,8 +710,6 @@ text_Salsa_canciones %>%
 title(main = "Salsa: NB Sentimiento")
 ```
 
-
-
 # Baladas: Bigramas
 
 Se ha usado `unnest_tokens` para tokenizar por palabras individuales.
@@ -976,7 +974,7 @@ title(main = "Componente conexa", outer = T, line = -1)
 
 # Comparación
 
-Discursos de la ONU. 
+Géneros de Música Colombiana. 
 
 Skip-grams.
 
@@ -984,7 +982,6 @@ Componente conexa de la red conformada con umbral 1.
 
 
 ## Redes
-
 ```{r, echo = F}
 ##### importar datos
 text_Baladas <- suppressWarnings(unlist(c(read_csv("baladas.txt", col_names = FALSE, show_col_types = FALSE))))
@@ -1027,8 +1024,6 @@ V(g)$cluster <- clusters(graph = g)$membership
 gcc_Baladas <- induced_subgraph(graph = g, vids = which(V(g)$cluster == which.max(clusters(graph = g)$csize)))
 
 ```
-
-
 
 ```{r, echo = F}
 ##### importar datos
@@ -1156,9 +1151,8 @@ V(g)$cluster <- clusters(graph = g)$membership
 gcc_Salsa_canciones <- induced_subgraph(graph = g, vids = which(V(g)$cluster == which.max(clusters(graph = g)$csize)))
 ```
 
-
 ```{r, fig.width=12, fig.height=6, fig.align='center', echo = F}
-par(mfrow = c(1,3), mar = c(1,1,2,1), mgp = c(1,1,1))
+par(mfrow = c(1,4), mar = c(1,1,2,1), mgp = c(1,1,1))
 # viz 1
 set.seed(123)
 plot(gcc_Baladas, layout = layout_with_kk, vertex.color = adjustcolor('red4', 0.1), vertex.frame.color = 'red4', vertex.size = 1.6*strength(gcc_Baladas), vertex.label = NA, main = "Baladas")
@@ -1172,49 +1166,6 @@ plot(gcc_Rock_canciones, layout = layout_with_kk, vertex.color = adjustcolor('pu
 set.seed(1234)
 plot(gcc_Salsa_canciones, layout = layout_with_kk, vertex.color = adjustcolor('yellow4', 0.1), vertex.frame.color = 'yellow4', vertex.size = 1.6*strength(gcc_Salsa_canciones), vertex.label = NA, main = "Salsa_canciones")
 ```
-
-
-
-
-```{r, fig.width=12, fig.height=6, fig.align='center', echo = F}
-par(mfrow = c(1,3), mar = c(1,1,2,1), mgp = c(1,1,1))
-# viz 1
-set.seed(123)
-plot(gcc_Baladas, layout = layout_with_kk, vertex.color = adjustcolor('red4', 0.1), vertex.frame.color = 'red4', vertex.size = 1.6*strength(gcc_Baladas), vertex.label = NA, main = "Baladas")
-# viz 2
-set.seed(123)
-plot(gcc_Reggaeton, layout = layout_with_kk, vertex.color = adjustcolor('blue4', 0.1), vertex.frame.color = 'blue4', vertex.size = 1.6*strength(gcc_Reggaeton), vertex.label = NA, main = "Reggaeton")
-# viz 3
-set.seed(123)
-plot(gcc_Rock_canciones, layout = layout_with_kk, vertex.color = adjustcolor('purple4', 0.1), vertex.frame.color = 'purple4', vertex.size = 1.6*strength(gcc_Rock_canciones), vertex.label = NA, main = "Rock_canciones")
-# viz 4
-set.seed(1234)
-plot(gcc_Salsa_canciones, layout = layout_with_kk, vertex.color = adjustcolor('yellow4', 0.1), vertex.frame.color = 'yellow4', vertex.size = 1.6*strength(gcc_Salsa_canciones), vertex.label = NA, main = "Salsa_canciones")
-
-```
-
-
-
-```{r, fig.width=12, fig.height=6, fig.align='center', echo = F}
-par(mfrow = c(1,3), mar = c(1,1,2,1), mgp = c(1,1,1))
-# viz 1
-set.seed(123)
-plot(gcc_Baladas, layout = layout_with_kk, vertex.color = adjustcolor('red4', 0.1), vertex.frame.color = 'red4', vertex.size = 1.6*strength(gcc_Baladas), vertex.label = NA, main = "Baladas")
-# viz 2
-set.seed(123)
-plot(gcc_Reggaeton, layout = layout_with_kk, vertex.color = adjustcolor('blue4', 0.1), vertex.frame.color = 'blue4', vertex.size = 1.6*strength(gcc_Reggaeton), vertex.label = NA, main = "Reggaeton")
-# viz 3
-set.seed(123)
-plot(gcc_Rock_canciones, layout = layout_with_kk, vertex.color = adjustcolor('purple4', 0.1), vertex.frame.color = 'purple4', vertex.size = 1.6*strength(gcc_Rock_canciones), vertex.label = NA, main = "Rock_canciones")
-# viz 4
-set.seed(1234)
-plot(gcc_Salsa_canciones, layout = layout_with_kk, vertex.color = adjustcolor('yellow4', 0.1), vertex.frame.color = 'yellow4', vertex.size = 1.6*strength(gcc_Salsa_canciones), vertex.label = NA, main = "Salsa_canciones")
-```
-
-
-
-
-
 ## Paralabras más importantes
 
 ### Baladas: Top 10 {-}
@@ -1236,7 +1187,7 @@ centralidad_Reggaeton %>%
   head(n = 10)
 ```
 
-## Rock_canciones : Top 10 {-}
+## Rock : Top 10 {-}
 
 ```{r, echo = F}
 centralidad_Rock_canciones <- tibble(word = V(gcc_Rock_canciones)$name, eigen = eigen_centrality(gcc_Rock_canciones, scale = T)$vector)
@@ -1244,7 +1195,7 @@ centralidad_Rock_canciones %>%
   arrange(desc(eigen)) %>%
   head(n = 10)
 ```
-## Salsa_canciones : Top 10 {-}
+## Salsa : Top 10 {-}
 ```{r, echo = F}
 centralidad_Salsa_canciones <- tibble(word = V(gcc_Salsa_canciones)$name, eigen = eigen_centrality(gcc_Salsa_canciones, scale = T)$vector)
 centralidad_Salsa_canciones %>%
@@ -1287,10 +1238,10 @@ set.seed(123)
 plot(gcc_Reggaeton, layout = layout_with_kk, vertex.color = adjustcolor(cols[kc_Reggaeton$membership], 0.1), vertex.frame.color = cols[kc_Reggaeton$membership], vertex.size = 1.6*strength(gcc_Reggaeton), vertex.label = NA, main = "Reggaeton")
 #viz 3
 set.seed(123)
-plot(gcc_Rock_canciones, layout = layout_with_kk, vertex.color = adjustcolor(cols[kc_Rock_canciones$membership], 0.1), vertex.frame.color = cols[kc_Rock_canciones$membership], vertex.size = 1.6*strength(gcc_Rock_canciones), vertex.label = NA, main = "Rock_canciones")
+plot(gcc_Rock_canciones, layout = layout_with_kk, vertex.color = adjustcolor(cols[kc_Rock_canciones$membership], 0.1), vertex.frame.color = cols[kc_Rock_canciones$membership], vertex.size = 1.6*strength(gcc_Rock_canciones), vertex.label = NA, main = "Rock")
 #viz 4
 set.seed(1234)
-plot(gcc_Salsa_canciones, layout = layout_with_kk, vertex.color = adjustcolor(cols[kc_Salsa_canciones$membership], 0.1), vertex.frame.color = cols[kc_Salsa_canciones$membership], vertex.size = 1.6*strength(gcc_Salsa_canciones), vertex.label = NA, main = "Salsa_canciones")
+plot(gcc_Salsa_canciones, layout = layout_with_kk, vertex.color = adjustcolor(cols[kc_Salsa_canciones$membership], 0.1), vertex.frame.color = cols[kc_Salsa_canciones$membership], vertex.size = 1.6*strength(gcc_Salsa_canciones), vertex.label = NA, main = "Salsa")
 ```
 
 ### Baladas: Top 5 grupo mayor {-}
@@ -1314,7 +1265,7 @@ grupos_Reggaeton %>%
   head(n = 5)
 ```
 
-### Rock_canciones: Top 5 grupo mayor {-}
+### Rock: Top 5 grupo mayor {-}
 ```{r, echo=F}
 V(gcc_Rock_canciones)$membership <- kc_Rock_canciones$membership
 grupos_Rock_canciones <- tibble(word = V(gcc_Rock_canciones) %>% names(), cluster = V(gcc_Rock_canciones)$membership, eigen = eigen_centrality(gcc_Rock_canciones, scale = T)$vector)
@@ -1323,7 +1274,7 @@ grupos_Rock_canciones %>%
   arrange(desc(eigen)) %>%
   head(n = 5)
 ```
-### Salsa_canciones: Top 5 grupo mayor {-}
+### Salsa: Top 5 grupo mayor {-}
 ```{r, echo = F}
 V(gcc_Salsa_canciones)$membership <- kc_Salsa_canciones$membership
 grupos_Salsa_canciones <- tibble(word = V(gcc_Salsa_canciones) %>% names(), cluster = V(gcc_Salsa_canciones)$membership, eigen = eigen_centrality(gcc_Salsa_canciones, scale = T)$vector)
