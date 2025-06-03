@@ -387,7 +387,7 @@ suppressMessages(suppressWarnings(library(gridExtra)))
 # ---------- Baladas ----------
 text_Baladas %>%
   count(word, sort = TRUE) %>%
-  filter(n > 10) %>%
+  filter(n > 14) %>%
   mutate(word = reorder(word, n)) %>%
   ggplot(aes(x = word, y = n)) +
     theme_light() + 
@@ -399,7 +399,7 @@ text_Baladas %>%
 # ---------- Reggaeton ----------
 text_Reggaeton %>%
   count(word, sort = TRUE) %>%
-  filter(n > 7) %>%
+  filter(n > 10) %>%
   mutate(word = reorder(word, n)) %>%
   ggplot(aes(x = word, y = n)) +
     theme_light() + 
@@ -408,12 +408,10 @@ text_Reggaeton %>%
     ylab("Frecuencia") +
     coord_flip() +
     ggtitle(label = 'Reggaeton: Conteo de palabras') -> p2
-# desplegar grafico
-grid.arrange(p1, p2, ncol = 2)
 #-----------Rock_canciones--------
 text_Rock_canciones %>%
   count(word, sort = TRUE) %>%
-  filter(n > 7) %>%
+  filter(n > 10) %>%
   mutate(word = reorder(word,n)) %>%
   ggplot(aes(x = word, y = n)) +
     theme_light()+
@@ -421,13 +419,11 @@ text_Rock_canciones %>%
     xlab(NULL)+
     ylab("Frecuencia")+
     coord_flip()+
-    ggtitle(label = 'Rock_canciones: Conteo de palabras') -> p3
-# desplegar grafico 
-grid.arrange(p1, p2, p3, ncol = 3)
+    ggtitle(label = 'Rock: Conteo de palabras') -> p3
 #-----------Salsa_canciones--------
 text_Salsa_canciones %>%
   count(word, sort = TRUE) %>%
-  filter(n > 7) %>%
+  filter(n > 15) %>%
   mutate(word = reorder(word,n)) %>%
   ggplot(aes(x = word, y = n)) +
     theme_light()+
@@ -435,9 +431,9 @@ text_Salsa_canciones %>%
     xlab(NULL)+
     ylab("Frecuencia")+
     coord_flip()+
-    ggtitle(label = 'Salsa_canciones: Conteo de palabras') -> p4
+    ggtitle(label = 'Salsa: Conteo de palabras') -> p4
 # desplegar grafico 
-grid.arrange(p1, p2, p3, p4 )
+grid.arrange(p1, p2, p3, p4)
 ```
 
 
@@ -450,26 +446,26 @@ par(mfrow = c(2,2), mar = c(1,1,2,1), mgp = c(1,1,1))
 set.seed(123)
 text_Baladas %>%
   count(word, sort = TRUE) %>%
-  with(wordcloud(words = word, freq = n, max.words = 30, colors = 'red4'))
-title(main = "Baladas")
+  with(wordcloud(words = word, freq = n, max.words = 12, colors = 'red4'))
+title(main = "Baladas: Nube de Palabras")
 # ---------- Reggaeton ----------
 set.seed(123)
 text_Reggaeton %>%
   count(word, sort = TRUE) %>%
-  with(wordcloud(words = word, freq = n, max.words = 20, colors = 'blue4'))
-title(main = "Reggaeton")
+  with(wordcloud(words = word, freq = n, max.words = 10, colors = 'blue4'))
+title(main = "Reggaeton: Nube de Palabras")
 #-------------Rock_canciones-----------
 set.seed(123)
 text_Rock_canciones %>%
   count(word, sort = TRUE) %>%
-  with(wordcloud(words = word, freq = n, max.words = 20, colors = 'purple4'))
-title(main = "Rock_canciones")
+  with(wordcloud(words = word, freq = n, max.words = 10, colors = 'purple4'))
+title(main = "Rock: Nube de Palabras")
 #-------------Salsa_canciones-----------
 set.seed(1234)
 text_Salsa_canciones %>%
   count(word, sort = TRUE) %>%
-  with(wordcloud(words = word, freq = n, max.words = 20, colors = 'yellow4'))
-title(main = "Salsa_canciones")
+  with(wordcloud(words = word, freq = n, max.words = 10, colors = 'yellow4'))
+title(main = "Salsa: Nube de Palabras")
 ```
 
 
@@ -493,7 +489,7 @@ head(frec, n = 10)
 
 ```{r}
 ##### top 10 palabras en comun
-# orden anidado respecto a Baladas, Reggaeton y Rock
+# orden anidado respecto a Baladas, Reggaeton, Rock y Salsa
 frec %>%
   filter(Baladas !=0, Reggaeton != 0, Rock_canciones != 0) %>%
   arrange(desc(Baladas), desc(Reggaeton), desc(Rock_canciones), desc(Salsa_canciones)) -> frec_comun
@@ -591,8 +587,9 @@ text_Baladas %>%
     coord_flip(ylim = c(-7,7)) +
     labs(y = "Frecuencia",
          x = NULL,
-         title = "Baladas: Conteo por sentiment") +
-    theme_minimal() -> p1
+         title = "Baladas") +
+    theme_minimal() +
+    theme(legend.position = "none") -> p1
 # ---------- Reggaeton ----------
 text_Reggaeton %>%
   inner_join(sentiment_words) %>%
@@ -606,10 +603,9 @@ text_Reggaeton %>%
     coord_flip(ylim = c(-7,7)) +
     labs(y = "Frecuencia",
          x = NULL,
-         title = "Reggaeton: Conteo por sentiment") +
-    theme_minimal() -> p2 
-# desplegar grafico
-grid.arrange(p1, p2, ncol = 2)
+         title = "Reggaeton") +
+    theme_minimal() +
+    theme(legend.position = "none") -> p2 
 #-------------Rock_canciones------------------
 text_Rock_canciones %>%
     inner_join(sentiment_words) %>%
@@ -623,10 +619,9 @@ text_Rock_canciones %>%
     coord_flip(ylim = c(-7,7)) +
     labs(y = "Frecuencia",
          x = NULL,
-         title = "Rock_canciones : Conteo por sentiment") +
-    theme_minimal() -> p3
-# desplegar grafico
-grid.arrange(p3, p4, ncol  = 2)
+         title = "Rock") +
+    theme_minimal() +
+    theme(legend.position = "none") -> p3
 #-------------Salsa_canciones------------------
 text_Salsa_canciones %>%
     inner_join(sentiment_words) %>%
@@ -640,10 +635,12 @@ text_Salsa_canciones %>%
     coord_flip(ylim = c(-7,7)) +
     labs(y = "Frecuencia",
          x = NULL,
-         title = "Salsa_canciones : Conteo por sentiment") +
+         title = "Salsa",
+         fill = "Sentimiento"
+         ) +
     theme_minimal() -> p4
 # desplegar grafico
-grid.arrange(p3, p4, ncol  = 2)
+grid.arrange(p1, p2, p3, p4, ncol  = 4)
 ```
 
 
@@ -651,44 +648,66 @@ grid.arrange(p3, p4, ncol  = 2)
 
 ```{r, fig.width=10, fig.height=6, fig.align='center'}
 suppressMessages(suppressWarnings(library(reshape2)))  # acast
+
 ##### viz
-par(mfrow = c(2,2), mar = c(1,1,2,1), mgp = c(1,1,1))
+par(mfrow = c(2,2), mar = c(1,1,3,1), mgp = c(1,1,1))
 # ---------- Baladas ----------
 set.seed(123)
 text_Baladas %>%
   inner_join(sentiment_words) %>%
   count(word, sentiment, sort = TRUE) %>%
   acast(word ~ sentiment, value.var = "n", fill = 0) %>%
-  comparison.cloud(colors = brewer.pal(8,'Dark2')[c(2,5)], 
-                   max.words = 50, title.size = 1.5)
-title(main = "Baladas")
+  comparison.cloud(
+    colors = c("darkred", "darkgreen"),
+    title.size = 0.01,
+    title.colors = c("white", "white"),
+    family = "serif",
+    scale = c(3,1),
+    max.words = 50 
+    )
+title(main = "Baladas: NB Sentimiento")
 # ---------- Reggaeton ----------
 set.seed(123)
 text_Reggaeton %>%
   inner_join(sentiment_words) %>%
   count(word, sentiment, sort = TRUE) %>%
   acast(word ~ sentiment, value.var = "n", fill = 0) %>%
-  comparison.cloud(colors = brewer.pal(8,'Dark2')[c(2,5)], 
-                   max.words = 50, title.size = 1.5)
-title(main = "Reggaeton")
+  comparison.cloud(
+    colors = c("red", "green"),
+    title.size = 1.5,
+    family = "serif",
+    scale = c(3,1),
+    max.words = 50 
+  )
+title(main = "Reggaeton: NB Sentimiento")
 #--------Rock_canciones---------
 set.seed(123)
 text_Rock_canciones %>%
   inner_join(sentiment_words) %>%
   count(word, sentiment, sort = TRUE) %>%
   acast(word ~ sentiment, value.var = "n", fill = 0) %>%
-  comparison.cloud(colors = brewer.pal(8,'Dark2')[c(2,5)], 
-                   max.words = 50, title.size = 1.5)
-title(main = "Rock_canciones")
+  comparison.cloud(
+    colors = c("red", "green"),
+    title.size = 1.5,
+    family = "serif",
+    scale = c(3,1),
+    max.words = 50 
+  )
+title(main = "Rock: NB Sentimiento")
 #--------Salsa_canciones---------
 set.seed(123)
 text_Salsa_canciones %>%
   inner_join(sentiment_words) %>%
   count(word, sentiment, sort = TRUE) %>%
   acast(word ~ sentiment, value.var = "n", fill = 0) %>%
-  comparison.cloud(colors = brewer.pal(8,'Dark2')[c(2,5)], 
-                   max.words = 50, title.size = 1.5)
-title(main = "Salsa_canciones")
+  comparison.cloud(
+    colors = c("darkred", "darkgreen"),
+    title.size = 1.5,
+    family = "serif",
+    scale = c(3,1),
+    max.words = 50 
+  )
+title(main = "Salsa: NB Sentimiento")
 ```
 
 
@@ -799,7 +818,7 @@ g <- text_Rock_canciones_bi_counts %>%
   graph_from_data_frame(directed = FALSE)
 # viz
 set.seed(123)
-plot(g, layout = layout_with_fr, vertex.color = 1, vertex.frame.color = 1, vertex.size = 3, vertex.label.color = 'black', vertex.label.cex = 1, vertex.label.dist = 1, main = "Umbral = 3")
+plot(g, layout = layout_with_fr, vertex.color = 1, vertex.frame.color = 1, vertex.size = 3, vertex.label.color = 'black', vertex.label.cex = 1, vertex.label.dist = 1, main = "Bigramas Rock con Umbral = 3")
 ```
 
 
