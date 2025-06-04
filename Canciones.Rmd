@@ -5,7 +5,7 @@ author:
 - Julian Cruz
 - Tomas Guerra
 - Juliana Borja
-- Nadia 
+- Nadia Morales
 date: ''
 output:
   html_document:
@@ -744,7 +744,7 @@ text_Salsa_canciones %>%
 title(main = "Salsa: NB Sentimiento")
 ```
 
-# Baladas: Bigramas
+# Bigramas
 
 Se ha usado `unnest_tokens` para tokenizar por palabras individuales.
 
@@ -752,6 +752,7 @@ Ahora se quiere tokenizar por **secuencias de palabras**.
 
 ¿Qué palabras tienden a seguir otras? ¿Qué palabras tienden a co-ocurrir juntas?
 
+## Ejemplo de Bigramas de todos los géneros
 
 ```{r}
 ##### bigramas: Ejemplo cancion Rock_canciones
@@ -861,7 +862,7 @@ text_df %>%
   head(n = 10)
 ```
 
-
+## Bigramas Definitivos de todos los géneros
 ```{r}
 ##### importar datos
 text_Rock_canciones <- unlist(c(read_csv("Rock_canciones.txt", col_names = FALSE, show_col_types = FALSE)))
@@ -1052,99 +1053,159 @@ text_Salsa_canciones_bi %>%
 dim(text_Salsa_canciones_bi_counts)
 head(text_Salsa_canciones_bi_counts, n = 10)
 ```
-
+### Definición de las redes
+#### Redes con Umbral 3 
 ```{r, fig.width=6, fig.height=6, fig.align='center'}
-##### definir una red a partir de la frecuencia (weight) de los bigramas
-# binaria, no dirigida, ponderada, simple
-# se recomienda variar el umbral del filtro y construir bigramas no consecutivos para obtener redes con mayor informacion
+# Cargar librerías necesarias
 suppressMessages(suppressWarnings(library(igraph)))
-g <- text_Rock_canciones_bi_counts %>%
+suppressMessages(suppressWarnings(library(dplyr)))
+
+# 1) Bigramas Rock (Umbral = 3)
+g_rock <- text_Rock_canciones_bi_counts %>%
   filter(weight > 2) %>%
   graph_from_data_frame(directed = FALSE)
-# viz
 set.seed(123)
-plot(g, layout = layout_with_fr, vertex.color = 1, vertex.frame.color = 1, vertex.size = 3, vertex.label.color = 'black', vertex.label.cex = 1, vertex.label.dist = 1, main = "Bigramas Rock con Umbral = 3")
-```
+plot(
+  g_rock,
+  layout = layout_with_fr,
+  vertex.color = 1,
+  vertex.frame.color = 1,
+  vertex.size = 3,
+  vertex.label.color = "black",
+  vertex.label.cex = 1,
+  vertex.label.dist = 1,
+  main = "Bigramas Rock con Umbral = 3"
+)
 
-```{r, fig.width=6, fig.height=6, fig.align='center'}
-##### definir una red a partir de la frecuencia (weight) de los bigramas
-# binaria, no dirigida, ponderada, simple
-# se recomienda variar el umbral del filtro y construir bigramas no consecutivos para obtener redes con mayor informacion
-suppressMessages(suppressWarnings(library(igraph)))
-g <- text_Baladas_bi_counts %>%
+# 2) Bigramas Baladas (Umbral = 3)
+g_baladas <- text_Baladas_bi_counts %>%
   filter(weight > 2) %>%
   graph_from_data_frame(directed = FALSE)
-# viz
 set.seed(123)
-plot(g, layout = layout_with_fr, vertex.color = 1, vertex.frame.color = 1, vertex.size = 3, vertex.label.color = 'purple', vertex.label.cex = 1, vertex.label.dist = 1, main = "Bigramas Baladas con Umbral = 1")
+plot(
+  g_baladas,
+  layout = layout_with_fr,
+  vertex.color = 1,
+  vertex.frame.color = 1,
+  vertex.size = 3,
+  vertex.label.color = "purple",
+  vertex.label.cex = 1,
+  vertex.label.dist = 1,
+  main = "Bigramas Baladas con Umbral = 3"
+)
 
-```
-```{r, fig.width=6, fig.height=6, fig.align='center'}
-##### definir una red a partir de la frecuencia (weight) de los bigramas
-# binaria, no dirigida, ponderada, simple
-# se recomienda variar el umbral del filtro y construir bigramas no consecutivos para obtener redes con mayor informacion
-suppressMessages(suppressWarnings(library(igraph)))
-g <- text_Reggaeton_bi_counts %>%
+# 3) Bigramas Reggaeton (Umbral = 3)
+g_reggaeton <- text_Reggaeton_bi_counts %>%
   filter(weight > 2) %>%
   graph_from_data_frame(directed = FALSE)
-# viz
 set.seed(123)
-plot(g, layout = layout_with_fr, vertex.color = 1, vertex.frame.color = 1, vertex.size = 3, vertex.label.color = 'maroon', vertex.label.cex = 1, vertex.label.dist = 1, main = "Bigramas Reggaeton con Umbral = 2")
-```
-```{r, fig.width=6, fig.height=6, fig.align='center'}
-##### definir una red a partir de la frecuencia (weight) de los bigramas
-# binaria, no dirigida, ponderada, simple
-# se recomienda variar el umbral del filtro y construir bigramas no consecutivos para obtener redes con mayor informacion
-suppressMessages(suppressWarnings(library(igraph)))
-g <- text_Salsa_canciones_bi_counts %>%
+plot(
+  g_reggaeton,
+  layout = layout_with_fr,
+  vertex.color = 1,
+  vertex.frame.color = 1,
+  vertex.size = 3,
+  vertex.label.color = "maroon",
+  vertex.label.cex = 1,
+  vertex.label.dist = 1,
+  main = "Bigramas Reggaeton con Umbral = 3"
+)
+
+# 4) Bigramas Salsa (Umbral = 3)
+g_salsa <- text_Salsa_canciones_bi_counts %>%
   filter(weight > 2) %>%
   graph_from_data_frame(directed = FALSE)
-# viz
 set.seed(123)
-plot(g, layout = layout_with_fr, vertex.color = 1, vertex.frame.color = 1, vertex.size = 3, vertex.label.color = 'navyblue', vertex.label.cex = 1, vertex.label.dist = 1, main = "Bigramas Salsa con Umbral = 4")
+plot(
+  g_salsa,
+  layout = layout_with_fr,
+  vertex.color = 1,
+  vertex.frame.color = 1,
+  vertex.size = 3,
+  vertex.label.color = "navyblue",
+  vertex.label.cex = 1,
+  vertex.label.dist = 1,
+  main = "Bigramas Salsa con Umbral = 3"
+)
 ```
-
-
-
+#### Redes con Umbral 6
 ```{r, fig.width=6, fig.height=6, fig.align='center'}
-##### red con un umbral diferente
-g <- text_Rock_canciones_bi_counts %>%
-  filter(weight > 0) %>%
+## Formulamos redes con un umbral distinto, de hecho, el doble que el anterior.
+# Cargar librerías necesarias
+suppressMessages(suppressWarnings(library(igraph)))
+suppressMessages(suppressWarnings(library(dplyr)))
+
+# 1) Bigramas Rock (Umbral > 6)
+g_rock <- text_Rock_canciones_bi_counts %>%
+  filter(weight > 6) %>%
   graph_from_data_frame(directed = FALSE)
-# viz
 set.seed(123)
-plot(g, layout = layout_with_kk, vertex.color = 1, vertex.frame.color = 1, vertex.size = 3, vertex.label = NA, main = "Umbral = 3")
+plot(
+  g_rock,
+  layout = layout_with_fr,
+  vertex.color = 1,
+  vertex.frame.color = 1,
+  vertex.size = 3,
+  vertex.label.color = "black",
+  vertex.label.cex = 1,
+  vertex.label.dist = 1,
+  main = "Bigramas Rock con Umbral > 6"
+)
+
+# 2) Bigramas Baladas (Umbral > 6)
+g_baladas <- text_Baladas_bi_counts %>%
+  filter(weight > 6) %>%
+  graph_from_data_frame(directed = FALSE)
+set.seed(123)
+plot(
+  g_baladas,
+  layout = layout_with_fr,
+  vertex.color = 1,
+  vertex.frame.color = 1,
+  vertex.size = 3,
+  vertex.label.color = "purple",
+  vertex.label.cex = 1,
+  vertex.label.dist = 1,
+  main = "Bigramas Baladas con Umbral > 6"
+)
+
+# 3) Bigramas Reggaeton (Umbral > 6)
+g_reggaeton <- text_Reggaeton_bi_counts %>%
+  filter(weight > 6) %>%
+  graph_from_data_frame(directed = FALSE)
+set.seed(123)
+plot(
+  g_reggaeton,
+  layout = layout_with_fr,
+  vertex.color = 1,
+  vertex.frame.color = 1,
+  vertex.size = 3,
+  vertex.label.color = "maroon",
+  vertex.label.cex = 1,
+  vertex.label.dist = 1,
+  main = "Bigramas Reggaeton con Umbral > 6"
+)
+
+# 4) Bigramas Salsa (Umbral > 6)
+g_salsa <- text_Salsa_canciones_bi_counts %>%
+  filter(weight > 6) %>%
+  graph_from_data_frame(directed = FALSE)
+set.seed(123)
+plot(
+  g_salsa,
+  layout = layout_with_fr,
+  vertex.color = 1,
+  vertex.frame.color = 1,
+  vertex.size = 3,
+  vertex.label.color = "navyblue",
+  vertex.label.cex = 1,
+  vertex.label.dist = 1,
+  main = "Bigramas Salsa con Umbral > 6"
+)
+
 ```
 
-```{r, fig.width=6, fig.height=6, fig.align='center'}
-##### red con un umbral diferente
-g <- text_Baladas_bi_counts %>%
-  filter(weight > 0) %>%
-  graph_from_data_frame(directed = FALSE)
-# viz
-set.seed(123)
-plot(g, layout = layout_with_kk, vertex.color = 1, vertex.frame.color = 1, vertex.size = 3, vertex.label = NA, main = "Umbral = 1")
-```
-```{r, fig.width=6, fig.height=6, fig.align='center'}
-##### red con un umbral diferente
-g <- text_Reggaeton_bi_counts %>%
-  filter(weight > 0) %>%
-  graph_from_data_frame(directed = FALSE)
-# viz
-set.seed(123)
-plot(g, layout = layout_with_kk, vertex.color = 1, vertex.frame.color = 1, vertex.size = 3, vertex.label = NA, main = "Umbral = 2")
-```
-```{r, fig.width=6, fig.height=6, fig.align='center'}
-##### red con un umbral diferente
-g <- text_Salsa_canciones_bi_counts %>%
-  filter(weight > 0) %>%
-  graph_from_data_frame(directed = FALSE)
-# viz
-set.seed(123)
-plot(g, layout = layout_with_kk, vertex.color = 1, vertex.frame.color = 1, vertex.size = 3, vertex.label = NA, main = "Umbral = 4")
-```
-
-
+### Componentes conexas
 ```{r, fig.width=12, fig.height=6, fig.align='center'}
 ##### componente conexa mas grande de la red
 g <- text_Rock_canciones_bi_counts %>%
@@ -1226,8 +1287,8 @@ title(main = "Componente conexa Reggaeton", outer = T, line = -1)
 
 
 
-# Baladas: Skip-grams
-
+# Skip-grams
+## Ejemplo Rock
 
 ```{r}
 ##### skip-gram: Ejemplo cancion Viento_Caifanes
@@ -1259,6 +1320,7 @@ text_df %>%
   unnest_tokens(tbl = ., input = text, output = skipgram, token = "skip_ngrams", n = 2) %>%
   head(n = 10)
 ```
+## Ejemplo Baladas
 ```{r}
 ##### skip-gram: Ejemplo cancion: Tabaco y Chanel
 # texto
@@ -1286,6 +1348,7 @@ text_df %>%
   head(n = 10)
 
 ```
+## Ejemplo Reggaetón
 ```{r}
 ##### skip-gram: Ejemplo cancion: Safari
 # texto
@@ -1308,6 +1371,7 @@ text_df %>%
   head(n = 10)
 ```
 
+## Ejemplo Salsa
 ```{r}
 ##### skip-gram: Ejemplo cancion: Salsa-Yuribuenaventura
 # texto
@@ -1328,7 +1392,8 @@ text_df %>%
   head(n = 10)
 
 ```
-
+## Skipgramas Definitivos con todos los géneros y su comparativa
+### Importar datos de cada género
 ```{r}
 ##### importar datos Rock
 text_Rock_canciones <- unlist(c(read_csv("Rock_canciones.txt", col_names = FALSE, show_col_types = FALSE)))
@@ -1350,10 +1415,8 @@ text_salsa <- unlist(c(read_csv("Salsa_canciones.txt", col_names = FALSE, show_c
 names(text_salsa) <- NULL
 text_salsa <- tibble(line = 1:length(text_salsa), text = text_salsa)
 ```
-
-
+### Tokenizar en skip-gram
 ```{r}
-##### tokenizar en skip-gram
 # en este caso cada token es un unigrama o un bigrama regular o un bigrama con espaciamiento
 # Rock
 text_Rock_canciones %>%
@@ -1387,9 +1450,8 @@ head(text_salsa_skip, n = 10)
 
 
 
-
+### Remover unigramas
 ```{r}
-##### remover unigramas
 suppressMessages(suppressWarnings(library(ngram)))
 
 # 1) Rock
@@ -1452,9 +1514,8 @@ head(text_salsa_skip, n = 10)
 ```
 
 
-
+### Omitir stop words
 ```{r}
-##### Omitir stop words
 
 ##### Rock
 text_Rock_canciones_skip %>%
@@ -1555,7 +1616,7 @@ head(text_salsa_skip_counts, n = 10)
 ```
 
 
-
+### Definir las redes 
 ```{r, fig.width=12, fig.height=6, fig.align='center'}
 ##### definir una red a partir de la frecuencia (weight) de los bigramas
 
@@ -1681,16 +1742,16 @@ plot(
 title(main = "Componente conexa y Clusters - Salsa", outer = TRUE, line = -1)
 
 ```
+
 # Comparación
 
-Géneros de Música Colombiana. 
+Análisis de géneros musicales colombianas. 
 
 Skip-grams.
 
 Componente conexa de la red conformada con umbral 1.
 
-
-## Redes
+## Redes Comparativas
 ```{r, echo = F}
 ##### importar datos
 text_Baladas <- suppressWarnings(unlist(c(read_csv("baladas.txt", col_names = FALSE, show_col_types = FALSE))))
@@ -1875,6 +1936,74 @@ plot(gcc_Rock_canciones, layout = layout_with_kk, vertex.color = adjustcolor('pu
 set.seed(1234)
 plot(gcc_Salsa_canciones, layout = layout_with_kk, vertex.color = adjustcolor('yellow4', 0.1), vertex.frame.color = 'yellow4', vertex.size = 1.6*strength(gcc_Salsa_canciones), vertex.label = NA, main = "Salsa_canciones")
 ```
+### Medidas de las Redes
+```{r, echo = F}
+# Tabla comparativa para los cuatro grafos 
+
+tab <- cbind(
+  # gcc_baladas
+  c(
+    mean_distance(gcc_Baladas),
+    mean(degree(gcc_Baladas)),
+    sd(degree(gcc_Baladas)),
+    clique.number(gcc_Baladas),
+    edge_density(gcc_Baladas),
+    transitivity(gcc_Baladas),
+    assortativity_degree(gcc_Baladas)
+  ),
+  # gcc_Reggaeton
+  c(
+    mean_distance(gcc_Reggaeton),
+    mean(degree(gcc_Reggaeton)),
+    sd(degree(gcc_Reggaeton)),
+    clique.number(gcc_Reggaeton),
+    edge_density(gcc_Reggaeton),
+    transitivity(gcc_Reggaeton),
+    assortativity_degree(gcc_Reggaeton)
+  ),
+  # gcc_Rock_canciones
+  c(
+    mean_distance(gcc_Rock_canciones),
+    mean(degree(gcc_Rock_canciones)),
+    sd(degree(gcc_Rock_canciones)),
+    clique.number(gcc_Rock_canciones),
+    edge_density(gcc_Rock_canciones),
+    transitivity(gcc_Rock_canciones),
+    assortativity_degree(gcc_Rock_canciones)
+  ),
+  # gcc_Salsa_canciones
+  c(
+    mean_distance(gcc_Salsa_canciones),
+    mean(degree(gcc_Salsa_canciones)),
+    sd(degree(gcc_Salsa_canciones)),
+    clique.number(gcc_Salsa_canciones),
+    edge_density(gcc_Salsa_canciones),
+    transitivity(gcc_Salsa_canciones),
+    assortativity_degree(gcc_Salsa_canciones)
+  )
+)
+
+rownames(tab) <- c(
+  "Dist. media",
+  "Grado media",
+  "Grado desviación",
+  "Número clan",
+  "Densidad",
+  "Transitividad",
+  "Asortatividad"
+)
+
+colnames(tab) <- c(
+  "Baladas",
+  "Reggaeton",
+  "Rock_canciones",
+  "Salsa_canciones"
+)
+
+round(tab, 4)
+
+```
+
 ## Paralabras más importantes
 
 ### Baladas: Top 10 {-}
@@ -1912,11 +2041,6 @@ centralidad_Salsa_canciones %>%
   head(n = 10)
 
 ```
-
-
-
-
-
 ## Agrupamiento
 
 ```{r, echo = F}
