@@ -5,6 +5,7 @@ author:
 - Julian Cruz
 - Tomas Guerra
 - Juliana Borja
+- Nadia 
 date: ''
 output:
   html_document:
@@ -35,14 +36,20 @@ Los computadores son buenos para procesar texto, pero no son buenos entendiéndo
 - Cuantificar relaciones y conexiones entre palabras.
 
 
-# Caso de estudio: Baladas y Reggaeton
+# Caso de estudio:
 
+## Baladas:
 
+Artistas:
 
-## Manuel_Medrano_Bajo_el_Agua_Una_y_otra_vez_La_Mujer_Que_Bota_Fuego_Si_Pudiera_La_Distancia{-}
-## Andres_Cepeda_Lo_Mejor_Que_Hay_en_mi_Vida_Mejor_que_a_ti_me_va_Besos_Usados_Tengo_Ganas{-}
-## Morat_Como_te_Atreves_Besos_en_Guerra_Aprender_a_Quererte_a_donde_Vamos{-}
-# Cara_Luna_Mi_Primer_Millon_Tabaco_Chanel_Pasos_Gigantes_Perderme_contigo{-}
+1)Manuel_Medrano:
+-Canciones: Bajo_el_Agua_Una_y_otra_vez_La_Mujer_Que_Bota_Fuego_Si_Pudiera_La_Distancia{-}
+2)Andres_Cepeda:
+-Canciones: Lo_Mejor_Que_Hay_en_mi_Vida_Mejor_que_a_ti_me_va_Besos_Usados_Tengo_Ganas{-}
+3)Morat:
+-Canciones: Como_te_Atreves_Besos_en_Guerra_Aprender_a_Quererte_a_donde_Vamos{-}
+4)Cara_Luna:
+-Canciones: Mi_Primer_Millon_Tabaco_Chanel_Pasos_Gigantes_Perderme_contigo{-}
 
 
  https://www.letras.com/manuel-medrano/bajo-el-agua/
@@ -64,10 +71,18 @@ Los computadores son buenos para procesar texto, pero no son buenos entendiéndo
  https://www.letras.com/bacilos/pasos-de-gigantes/
  https://www.letras.com/bacilos/perderme-contigo/
 
-## Reykon_el_lider_El_chisme_Remix_Tu_Cuerpo_Me_Llama_Remix_El_Error_La_Santa_Ginza_Remix_Secretos_Domingo_Imaginandote{-}
-## J_Balvin_Ay_Vamos_6_Am_Rojo_Culpables_Safari_Mi_Gente_No_Es_Justo_Blanco{-}
-## Manuel_Turizo_Una_Lady_Como_Tu_Esclavos_de_tus_Besos_La_Bachata{-}
-## Maluma_Hawai_Borro_Cassette_El_Perdedor_Addicted_Carnaval_Cosas_Pendientes
+## Reggaeton:
+
+Artistas:
+
+1)Reykon:
+-Canciones: el_lider_El_chisme_Remix_Tu_Cuerpo_Me_Llama_Remix_El_Error_La_Santa_Ginza_Remix_Secretos_Domingo_Imaginandote{-}
+2)J_Balvin:
+-Canciones: Ay_Vamos_6_Am_Rojo_Culpables_Safari_Mi_Gente_No_Es_Justo_Blanco{-}
+3)Manuel_Turizo:
+-Canciones: Una_Lady_Como_Tu_Esclavos_de_tus_Besos_La_Bachata{-}
+4)Maluma:
+-Canciones: Hawai_Borro_Cassette_El_Perdedor_Addicted_Carnaval_Cosas_Pendientes
 
  https://www.youtube.com/watch?v=3xinCpjWxxU
  https://www.youtube.com/watch?v=jgQ2MSwgC6A
@@ -94,10 +109,18 @@ Los computadores son buenos para procesar texto, pero no son buenos entendiéndo
  https://www.youtube.com/watch?v=ufa0K9w9z2c&pp=ygUPY2FybmF2YWwgbWFsdW1h
  https://www.youtube.com/watch?v=6vPhcRew8hA&pp=ygUQY29zYXMgcGVuZGllbnRlcw%3D%3D
  
-## Los_De_Adentro_Nubes_Negras_Quiero_Amarte_No_Mas_Tal_Vez_{-}
-## Kraken_Fragil_al_Viento_Vestido_de_Cristal_America_Silencioso_Amor_Arteciopelados_Baracunata_Florecita_Rockera_{-}
-## Caifanes_Afuera_Viento_No_dejes_que{-}
-## Enanitos_Verdes_La_Muralla_Verde{-}
+## Rock:
+
+Artistas:
+
+1)Los_De_Adentro:
+-Canciones: Nubes_Negras_Quiero_Amarte_No_Mas_Tal_Vez{-}
+2)Kraken:
+-Canciones: Fragil_al_Viento_Vestido_de_Cristal_America_Silencioso_Amor_Arteciopelados_Baracunata_Florecita_Rockera{-}
+3)Caifanes:
+-Canciones: Afuera_Viento_No_dejes_que{-}
+4)Enanitos_Verdes:
+-Canciones: La_Muralla_Verde{-}
 
  https://youtu.be/8_Tc5uP8SL4?si=DvK_wDQjGbTRIebT
  https://youtu.be/8hGAklEil10?si=G5-nZzi1n0rdJprE
@@ -113,8 +136,20 @@ Los computadores son buenos para procesar texto, pero no son buenos entendiéndo
  https://youtu.be/9KIshSBiojI?si=gZcaeeLWVnf73mxa
  https://youtu.be/i17Go6G-siA?si=E5JJA9aPvYxDtITo
  https://youtu.be/tYGZ1YCD2YU?si=vIcjZ9h9ZK69-omp
- 
-##Yuri_Buenaventura_No_Estoy_contigo_¿Dónde_Estás?_Salsa_Tu_Cancion_El_Guerrero
+
+## Salsa:
+
+Artistas:
+
+1)Joe_Arroyo:
+-Canciones: Rebelión_En_Barranquilla_me_quedo_Tal_para_cual_Pa’l_bailador_Te_quiero_más{-}
+2)Fruko_y_sus_Tesos:
+-Canciones: El_Preso_Los_Charcos_Cachondea_El_Ausente_El_Son_del_Tren{-}
+3)Grupo_Niche:
+-Canciones: Sin_sentimiento_Algo_que_se_quede_Cali_pachanguero_Se_pareció_tanto_a_ti_Una_aventura{-}
+4)Yuri_Buenaventura:
+-Canciones: No_Estoy_contigo_¿Dónde_Estás?_Salsa_Tu_Cancion_El_Guerrero{-}
+
  https://www.youtube.com/watch?v=7HtWEPfQJxw
  https://www.youtube.com/watch?v=ms3VDvksgks
  https://www.youtube.com/watch?v=I3eXeVRqtHQ
@@ -122,7 +157,6 @@ Los computadores son buenos para procesar texto, pero no son buenos entendiéndo
  https://www.youtube.com/watch?v=NlemaAlPeZs
  
 # Importar texto
-
 ```{r}
 ##### importar datos
 suppressMessages(suppressWarnings(library(readr)))
