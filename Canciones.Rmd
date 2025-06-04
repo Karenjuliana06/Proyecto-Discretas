@@ -1177,7 +1177,7 @@ set.seed(123)
 plot(gcc, layout = layout_with_kk, vertex.color = 1, vertex.frame.color = 1, vertex.size = 3, vertex.label.color = 'black', vertex.label.cex = 0.6, vertex.label.dist = 2)
 # viz 2
 set.seed(123)
-plot(gcc, layout = layout_with_kk, vertex.color = adjustcolor('purple4', 0.1), vertex.frame.color = 'purple4', vertex.size = 2*strength(gcc), vertex.label.color = 'black', vertex.label.cex = 0.9, vertex.label.dist = 1, edge.width = 3*E(g)$weight/max(E(g)$weight))
+plot(gcc, layout = layout_with_kk, vertex.color = adjustcolor('purple4', 0.1), vertex.frame.color = '4', vertex.size = 2*strength(gcc), vertex.label.color = 'black', vertex.label.cex = 0.9, vertex.label.dist = 1, edge.width = 3*E(g)$weight/max(E(g)$weight))
 title(main = "Componente conexa Baladas", outer = T, line = -1)
 ```
 
@@ -1216,6 +1216,75 @@ text_df %>%
   unnest_tokens(tbl = ., input = text, output = skipgram, token = "skip_ngrams", n = 2) %>%
   head(n = 10)
 ```
+```{r}
+##### skip-gram: Ejemplo cancion: Tabaco y Chanel
+# texto
+text <- c("Un olor a tabaco y Chanel",
+"Me recuerda el olor de su piel",
+"Una mezcla de miel y café",
+"Me recuerda el sabor de sus besos",
+"El color del final de la noche",
+"Me pregunta dónde fui a parar, dónde estás",
+"Que esto solo se vive una vez",
+"Dónde fuiste a parar, dónde estás",
+"Un olor a tabaco y Chanel",
+"Y una mezcla de miel y café",
+"Me preguntan por ella (ella) Me",
+"preguntan por ella",
+"Me preguntan también las estrellas",
+"Me reclaman que vuelva por ella",
+"Ay, que vuelva por ella (ella)",
+"Ay, que vuelva por ella)")
+# convertir a data frame
+text_df <- tibble(line  = 1:length(text), text = text)
+# tokenizar en bigramas
+text_df %>% 
+  unnest_tokens(tbl = ., input = text, output = skipgram, token = "skip_ngrams", n = 2) %>%
+  head(n = 10)
+
+```
+```{r}
+##### skip-gram: Ejemplo cancion: Safari
+# texto
+text <- c("Oye, papi, vamos con mis amigas para el party",
+"Tengo algo por un animal",
+"Cuando mi gente está aquí, hay tsunami",
+"Wavy, así es lo que me gusta",
+"You know I like it when tú fresco",
+"Me llamo princesa",
+"Voy a coger provecho",
+"Lo que me gusta",
+"You know I like it when tú fresco",
+"Me llamo princesa",
+"Voy a coger provecho")
+# convertir a data frame
+text_df <- tibble(line  = 1:length(text), text = text)
+# tokenizar en bigramas
+text_df %>% 
+  unnest_tokens(tbl = ., input = text, output = skipgram, token = "skip_ngrams", n = 2) %>%
+  head(n = 10)
+```
+
+```{r}
+##### skip-gram: Ejemplo cancion: Salsa-Yuribuenaventura
+# texto
+text <- c("La salsa que aquí les traigo",
+"la traigo directo mira",
+"la traigo de las entrañas",
+"de mi américa latina",
+
+"El día que estes llorando",
+"y tu alma se encuentre triste",
+"si bailas salsa mi hermano",
+"olvidarás que lo fuiste")
+# convertir a data frame
+text_df <- tibble(line  = 1:length(text), text = text)
+# tokenizar en bigramas
+text_df %>% 
+  unnest_tokens(tbl = ., input = text, output = skipgram, token = "skip_ngrams", n = 2) %>%
+  head(n = 10)
+
+```
 
 
 
@@ -1224,9 +1293,37 @@ text_df %>%
 text_Rock_canciones <- unlist(c(read_csv("Rock_canciones.txt", col_names = FALSE, show_col_types = FALSE)))
 names(text_Rock_canciones) <- NULL
 text_Rock_canciones <- tibble(line = 1:length(text_Rock_canciones), text = text_Rock_canciones)
+
+##### importar datos
+text_Baladas <- unlist(c(read_csv("Baladas.txt", col_names = FALSE, show_col_types = FALSE)))
+names(text_Baladas) <- NULL
+text_Baladas <- tibble(line = 1:length(text_Baladas), text = text_Baladas)
+
+##### importar datos
+text_Reggaeton <- unlist(c(read_csv("Reggaeton_proyecto.txt", col_names = FALSE, show_col_types = FALSE)))
+names(text_Reggaeton) <- NULL
+text_Reggaeton <- tibble(line = 1:length(text_Reggaeton), text = text_Reggaeton)
+
+##### importar datos
+text_Salsa_canciones <- unlist(c(read_csv("Salsa_canciones.txt", col_names = FALSE, show_col_types = FALSE)))
+names(text_Salsa_canciones) <- NULL
+text_Salsa_canciones <- tibble(line = 1:length(text_Salsa_canciones), text = text_Salsa_canciones)
+
+
+
+
 ```
 
 
+```{r}
+##### tokenizar en skip-gram
+# en este caso cada token es un unigrama o un bigrama regular o un bigrama con espaciamiento
+text_Rock_canciones %>%
+  unnest_tokens(tbl = ., input = text, output = skipgram, token = "skip_ngrams", n = 2) %>%
+  filter(!is.na(skipgram)) -> text_Rock_canciones_skip
+dim(text_Rock_canciones_skip)
+head(text_Rock_canciones_skip, n = 10)
+```
 ```{r}
 ##### tokenizar en skip-gram
 # en este caso cada token es un unigrama o un bigrama regular o un bigrama con espaciamiento
