@@ -843,8 +843,8 @@ text_Baladas<- tibble(line = 1:length(text_Baladas), text = text_Baladas)
 
 ```{r}
 ##### importar datos
-text_Reggaeton <- unlist(c(read_csv("Reggaeton.txt", col_names = FALSE, show_col_types = FALSE)))
-names(text_Rock_Reggaeton) <- NULL
+text_Reggaeton <- unlist(c(read_csv("Reggaeton_proyecto.txt", col_names = FALSE, show_col_types = FALSE)))
+names(text_Reggaeton) <- NULL
 text_Reggaeton <- tibble(line = 1:length(text_Reggaeton), text = text_Reggaeton)
 ```
 
@@ -867,6 +867,34 @@ dim(text_Rock_canciones_bi)
 head(text_Rock_canciones_bi, n = 10)
 ```
 
+```{r}
+##### tokenizar en bigramas
+# en este caso cada token es un bigrama
+text_Baladas %>%
+  unnest_tokens(tbl = ., input = text, output = bigram, token = "ngrams", n = 2) %>%
+  filter(!is.na(bigram)) -> text_Baladas_bi  # importante!
+dim(text_Baladas_bi)
+head(text_Baladas_bi, n = 10)
+```
+```{r}
+##### tokenizar en bigramas
+# en este caso cada token es un bigrama
+text_Reggaeton %>%
+  unnest_tokens(tbl = ., input = text, output = bigram, token = "ngrams", n = 2) %>%
+  filter(!is.na(bigram)) -> text_Reggaeton_bi  # importante!
+dim(text_Reggaeton_bi)
+head(text_Reggaeton_bi, n = 10)
+```
+```{r}
+##### tokenizar en bigramas
+# en este caso cada token es un bigrama
+text_Salsa_canciones %>%
+  unnest_tokens(tbl = ., input = text, output = bigram, token = "ngrams", n = 2) %>%
+  filter(!is.na(bigram)) -> text_Salsa_canciones_bi  # importante!
+dim(text_Salsa_canciones_bi)
+head(text_Salsa_canciones_bi, n = 10)
+```
+
 
 
 ```{r}
@@ -878,6 +906,31 @@ text_Rock_canciones_bi %>%
   head(n = 10)
 ```
 
+```{r}
+###### top 10 de bigramas mas frecuentes
+# hay bigramas que no son interesantes (e.g., "de la")
+# esto motiva el uso de stop words nuevamente
+text_Baladas_bi %>%
+  count(bigram, sort = TRUE) %>%
+  head(n = 10)
+```
+
+```{r}
+###### top 10 de bigramas mas frecuentes
+# hay bigramas que no son interesantes (e.g., "de la")
+# esto motiva el uso de stop words nuevamente
+text_Reggaeton_bi %>%
+  count(bigram, sort = TRUE) %>%
+  head(n = 10)
+```
+```{r}
+###### top 10 de bigramas mas frecuentes
+# hay bigramas que no son interesantes (e.g., "de la")
+# esto motiva el uso de stop words nuevamente
+text_Salsa_canciones_bi %>%
+  count(bigram, sort = TRUE) %>%
+  head(n = 10)
+```
 
 ```{r}
 ##### omitir stop words
