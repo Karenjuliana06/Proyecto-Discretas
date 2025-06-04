@@ -1178,7 +1178,7 @@ plot(gcc, layout = layout_with_kk, vertex.color = 1, vertex.frame.color = 1, ver
 # viz 2
 set.seed(123)
 plot(gcc, layout = layout_with_kk, vertex.color = adjustcolor('purple4', 0.1), vertex.frame.color = 'purple4', vertex.size = 2*strength(gcc), vertex.label.color = 'black', vertex.label.cex = 0.9, vertex.label.dist = 1, edge.width = 3*E(g)$weight/max(E(g)$weight))
-title(main = "Componente conexa Baladas", outer = T, line = -1)
+title(main = "Componente conexa Salsa", outer = T, line = -1)
 ```
 
 
