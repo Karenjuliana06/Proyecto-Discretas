@@ -1327,11 +1327,11 @@ head(text_Rock_canciones_skip, n = 10)
 ```{r}
 ##### tokenizar en skip-gram
 # en este caso cada token es un unigrama o un bigrama regular o un bigrama con espaciamiento
-text_Rock_canciones %>%
+text_Baladas %>%
   unnest_tokens(tbl = ., input = text, output = skipgram, token = "skip_ngrams", n = 2) %>%
-  filter(!is.na(skipgram)) -> text_Rock_canciones_skip
-dim(text_Rock_canciones_skip)
-head(text_Rock_canciones_skip, n = 10)
+  filter(!is.na(skipgram)) -> text_Baladas_skip
+dim(text_Baladas_skip)
+head(text_Baladas_skip, n = 10)
 ```
 
 
