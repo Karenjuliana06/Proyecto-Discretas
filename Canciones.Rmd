@@ -954,6 +954,70 @@ dim(text_Rock_canciones_bi_counts)
 head(text_Rock_canciones_bi_counts, n = 10)
 ```
 
+```{r}
+##### omitir stop words
+text_Baladas_bi %>%
+  separate(bigram, c("word1", "word2"), sep = " ") %>%
+  filter(!grepl(pattern = '[0-9]', x = word1)) %>%
+  filter(!grepl(pattern = '[0-9]', x = word2)) %>%
+  filter(!word1 %in% stop_words_es$word) %>%
+  filter(!word2 %in% stop_words_es$word) %>%
+  mutate(word1 = chartr(old = names(replacement_list) %>% str_c(collapse = ''), 
+                       new = replacement_list %>% str_c(collapse = ''),
+                       x = word1)) %>%
+  mutate(word2 = chartr(old = names(replacement_list) %>% str_c(collapse = ''), 
+                       new = replacement_list %>% str_c(collapse = ''),
+                       x = word2)) %>%
+  filter(!is.na(word1)) %>% 
+  filter(!is.na(word2)) %>%
+  count(word1, word2, sort = TRUE) %>%
+  rename(weight = n) -> text_Baladas_bi_counts  # importante para la conformacion de la red!
+dim(text_Baladas_bi_counts)
+head(text_Baladas_bi_counts, n = 10)
+```
+
+```{r}
+##### omitir stop words
+text_Reggaeton_bi %>%
+  separate(bigram, c("word1", "word2"), sep = " ") %>%
+  filter(!grepl(pattern = '[0-9]', x = word1)) %>%
+  filter(!grepl(pattern = '[0-9]', x = word2)) %>%
+  filter(!word1 %in% stop_words_es$word) %>%
+  filter(!word2 %in% stop_words_es$word) %>%
+  mutate(word1 = chartr(old = names(replacement_list) %>% str_c(collapse = ''), 
+                       new = replacement_list %>% str_c(collapse = ''),
+                       x = word1)) %>%
+  mutate(word2 = chartr(old = names(replacement_list) %>% str_c(collapse = ''), 
+                       new = replacement_list %>% str_c(collapse = ''),
+                       x = word2)) %>%
+  filter(!is.na(word1)) %>% 
+  filter(!is.na(word2)) %>%
+  count(word1, word2, sort = TRUE) %>%
+  rename(weight = n) -> text_Reggaeton_bi_counts  # importante para la conformacion de la red!
+dim(text_Reggaeton_bi_counts)
+head(text_Reggaeton_bi_counts, n = 10)
+```
+```{r}
+##### omitir stop words
+text_Salsa_canciones_bi %>%
+  separate(bigram, c("word1", "word2"), sep = " ") %>%
+  filter(!grepl(pattern = '[0-9]', x = word1)) %>%
+  filter(!grepl(pattern = '[0-9]', x = word2)) %>%
+  filter(!word1 %in% stop_words_es$word) %>%
+  filter(!word2 %in% stop_words_es$word) %>%
+  mutate(word1 = chartr(old = names(replacement_list) %>% str_c(collapse = ''), 
+                       new = replacement_list %>% str_c(collapse = ''),
+                       x = word1)) %>%
+  mutate(word2 = chartr(old = names(replacement_list) %>% str_c(collapse = ''), 
+                       new = replacement_list %>% str_c(collapse = ''),
+                       x = word2)) %>%
+  filter(!is.na(word1)) %>% 
+  filter(!is.na(word2)) %>%
+  count(word1, word2, sort = TRUE) %>%
+  rename(weight = n) -> text_Salsa_canciones_bi_counts  # importante para la conformacion de la red!
+dim(text_Salsa_canciones_bi_counts)
+head(text_Salsa_canciones_bi_counts, n = 10)
+```
 
 ```{r, fig.width=6, fig.height=6, fig.align='center'}
 ##### definir una red a partir de la frecuencia (weight) de los bigramas
@@ -968,6 +1032,43 @@ set.seed(123)
 plot(g, layout = layout_with_fr, vertex.color = 1, vertex.frame.color = 1, vertex.size = 3, vertex.label.color = 'black', vertex.label.cex = 1, vertex.label.dist = 1, main = "Bigramas Rock con Umbral = 3")
 ```
 
+```{r, fig.width=6, fig.height=6, fig.align='center'}
+##### definir una red a partir de la frecuencia (weight) de los bigramas
+# binaria, no dirigida, ponderada, simple
+# se recomienda variar el umbral del filtro y construir bigramas no consecutivos para obtener redes con mayor informacion
+suppressMessages(suppressWarnings(library(igraph)))
+g <- text_Baladas_bi_counts %>%
+  filter(weight > 2) %>%
+  graph_from_data_frame(directed = FALSE)
+# viz
+set.seed(123)
+plot(g, layout = layout_with_fr, vertex.color = 1, vertex.frame.color = 1, vertex.size = 3, vertex.label.color = 'purple', vertex.label.cex = 1, vertex.label.dist = 1, main = "Bigramas Baladas con Umbral = 1")
+
+```
+```{r, fig.width=6, fig.height=6, fig.align='center'}
+##### definir una red a partir de la frecuencia (weight) de los bigramas
+# binaria, no dirigida, ponderada, simple
+# se recomienda variar el umbral del filtro y construir bigramas no consecutivos para obtener redes con mayor informacion
+suppressMessages(suppressWarnings(library(igraph)))
+g <- text_Reggaeton_bi_counts %>%
+  filter(weight > 2) %>%
+  graph_from_data_frame(directed = FALSE)
+# viz
+set.seed(123)
+plot(g, layout = layout_with_fr, vertex.color = 1, vertex.frame.color = 1, vertex.size = 3, vertex.label.color = 'maroon', vertex.label.cex = 1, vertex.label.dist = 1, main = "Bigramas Reggaeton con Umbral = 2")
+```
+```{r, fig.width=6, fig.height=6, fig.align='center'}
+##### definir una red a partir de la frecuencia (weight) de los bigramas
+# binaria, no dirigida, ponderada, simple
+# se recomienda variar el umbral del filtro y construir bigramas no consecutivos para obtener redes con mayor informacion
+suppressMessages(suppressWarnings(library(igraph)))
+g <- text_Salsa_canciones_bi_counts %>%
+  filter(weight > 2) %>%
+  graph_from_data_frame(directed = FALSE)
+# viz
+set.seed(123)
+plot(g, layout = layout_with_fr, vertex.color = 1, vertex.frame.color = 1, vertex.size = 3, vertex.label.color = 'navyblue', vertex.label.cex = 1, vertex.label.dist = 1, main = "Bigramas Salsa con Umbral = 4")
+```
 
 
 
@@ -978,9 +1079,36 @@ g <- text_Rock_canciones_bi_counts %>%
   graph_from_data_frame(directed = FALSE)
 # viz
 set.seed(123)
-plot(g, layout = layout_with_kk, vertex.color = 1, vertex.frame.color = 1, vertex.size = 3, vertex.label = NA, main = "Umbral = 1")
+plot(g, layout = layout_with_kk, vertex.color = 1, vertex.frame.color = 1, vertex.size = 3, vertex.label = NA, main = "Umbral = 3")
 ```
 
+```{r, fig.width=6, fig.height=6, fig.align='center'}
+##### red con un umbral diferente
+g <- text_Baladas_bi_counts %>%
+  filter(weight > 0) %>%
+  graph_from_data_frame(directed = FALSE)
+# viz
+set.seed(123)
+plot(g, layout = layout_with_kk, vertex.color = 1, vertex.frame.color = 1, vertex.size = 3, vertex.label = NA, main = "Umbral = 1")
+```
+```{r, fig.width=6, fig.height=6, fig.align='center'}
+##### red con un umbral diferente
+g <- text_Reggaeton_bi_counts %>%
+  filter(weight > 0) %>%
+  graph_from_data_frame(directed = FALSE)
+# viz
+set.seed(123)
+plot(g, layout = layout_with_kk, vertex.color = 1, vertex.frame.color = 1, vertex.size = 3, vertex.label = NA, main = "Umbral = 2")
+```
+```{r, fig.width=6, fig.height=6, fig.align='center'}
+##### red con un umbral diferente
+g <- text_Salsa_canciones_bi_counts %>%
+  filter(weight > 0) %>%
+  graph_from_data_frame(directed = FALSE)
+# viz
+set.seed(123)
+plot(g, layout = layout_with_kk, vertex.color = 1, vertex.frame.color = 1, vertex.size = 3, vertex.label = NA, main = "Umbral = 4")
+```
 
 
 ```{r, fig.width=12, fig.height=6, fig.align='center'}
@@ -998,9 +1126,60 @@ plot(gcc, layout = layout_with_kk, vertex.color = 1, vertex.frame.color = 1, ver
 # viz 2
 set.seed(123)
 plot(gcc, layout = layout_with_kk, vertex.color = adjustcolor('red4', 0.1), vertex.frame.color = 'red4', vertex.size = 2*strength(gcc), vertex.label.color = 'black', vertex.label.cex = 0.9, vertex.label.dist = 1, edge.width = 3*E(g)$weight/max(E(g)$weight))
-title(main = "Componente conexa", outer = T, line = -1)
+title(main = "Componente conexa Rock Canciones", outer = T, line = -1)
 ```
 
+```{r, fig.width=12, fig.height=6, fig.align='center'}
+##### componente conexa mas grande de la red
+g <- text_Baladas_bi_counts %>%
+  filter(weight > 0) %>%
+  graph_from_data_frame(directed = FALSE)
+# grafo inducido por la componente conexa
+V(g)$cluster <- clusters(graph = g)$membership
+gcc <- induced_subgraph(graph = g, vids = which(V(g)$cluster == which.max(clusters(graph = g)$csize)))
+par(mfrow = c(1,2), mar = c(1,1,2,1), mgp = c(1,1,1))
+# viz 1
+set.seed(123)
+plot(gcc, layout = layout_with_kk, vertex.color = 1, vertex.frame.color = 1, vertex.size = 3, vertex.label.color = 'black', vertex.label.cex = 0.6, vertex.label.dist = 2)
+# viz 2
+set.seed(123)
+plot(gcc, layout = layout_with_kk, vertex.color = adjustcolor('green4', 0.1), vertex.frame.color = 'green4', vertex.size = 2*strength(gcc), vertex.label.color = 'black', vertex.label.cex = 0.9, vertex.label.dist = 1, edge.width = 3*E(g)$weight/max(E(g)$weight))
+title(main = "Componente conexa Baladas", outer = T, line = -1)
+```
+```{r, fig.width=12, fig.height=6, fig.align='center'}
+##### componente conexa mas grande de la red
+g <- text_Reggaeton_bi_counts %>%
+  filter(weight > 0) %>%
+  graph_from_data_frame(directed = FALSE)
+# grafo inducido por la componente conexa
+V(g)$cluster <- clusters(graph = g)$membership
+gcc <- induced_subgraph(graph = g, vids = which(V(g)$cluster == which.max(clusters(graph = g)$csize)))
+par(mfrow = c(1,2), mar = c(1,1,2,1), mgp = c(1,1,1))
+# viz 1
+set.seed(123)
+plot(gcc, layout = layout_with_kk, vertex.color = 1, vertex.frame.color = 1, vertex.size = 3, vertex.label.color = 'black', vertex.label.cex = 0.6, vertex.label.dist = 2)
+# viz 2
+set.seed(123)
+plot(gcc, layout = layout_with_kk, vertex.color = adjustcolor('blue4', 0.1), vertex.frame.color = 'blue4', vertex.size = 2*strength(gcc), vertex.label.color = 'black', vertex.label.cex = 0.9, vertex.label.dist = 1, edge.width = 3*E(g)$weight/max(E(g)$weight))
+title(main = "Componente conexa Reggaeton", outer = T, line = -1)
+```
+```{r, fig.width=12, fig.height=6, fig.align='center'}
+##### componente conexa mas grande de la red
+g <- text_Salsa_canciones_bi_counts %>%
+  filter(weight > 0) %>%
+  graph_from_data_frame(directed = FALSE)
+# grafo inducido por la componente conexa
+V(g)$cluster <- clusters(graph = g)$membership
+gcc <- induced_subgraph(graph = g, vids = which(V(g)$cluster == which.max(clusters(graph = g)$csize)))
+par(mfrow = c(1,2), mar = c(1,1,2,1), mgp = c(1,1,1))
+# viz 1
+set.seed(123)
+plot(gcc, layout = layout_with_kk, vertex.color = 1, vertex.frame.color = 1, vertex.size = 3, vertex.label.color = 'black', vertex.label.cex = 0.6, vertex.label.dist = 2)
+# viz 2
+set.seed(123)
+plot(gcc, layout = layout_with_kk, vertex.color = adjustcolor('purple4', 0.1), vertex.frame.color = 'purple4', vertex.size = 2*strength(gcc), vertex.label.color = 'black', vertex.label.cex = 0.9, vertex.label.dist = 1, edge.width = 3*E(g)$weight/max(E(g)$weight))
+title(main = "Componente conexa Baladas", outer = T, line = -1)
+```
 
 
 
