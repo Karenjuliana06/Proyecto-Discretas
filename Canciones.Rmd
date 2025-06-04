@@ -1286,52 +1286,60 @@ text_df %>%
 
 ```
 
-
-
 ```{r}
-##### importar datos
+##### importar datos Rock
 text_Rock_canciones <- unlist(c(read_csv("Rock_canciones.txt", col_names = FALSE, show_col_types = FALSE)))
 names(text_Rock_canciones) <- NULL
 text_Rock_canciones <- tibble(line = 1:length(text_Rock_canciones), text = text_Rock_canciones)
 
-##### importar datos
-text_Baladas <- unlist(c(read_csv("Baladas.txt", col_names = FALSE, show_col_types = FALSE)))
-names(text_Baladas) <- NULL
-text_Baladas <- tibble(line = 1:length(text_Baladas), text = text_Baladas)
+##### importar datos Baladas
+text_baladas <- unlist(c(read_csv("baladas.txt", col_names = FALSE, show_col_types = FALSE)))
+names(text_baladas) <- NULL
+text_baladas <- tibble(line = 1:length(text_baladas), text = text_baladas)
 
-##### importar datos
-text_Reggaeton <- unlist(c(read_csv("Reggaeton_proyecto.txt", col_names = FALSE, show_col_types = FALSE)))
-names(text_Reggaeton) <- NULL
-text_Reggaeton <- tibble(line = 1:length(text_Reggaeton), text = text_Reggaeton)
+##### importar datos Reggaeton
+text_reggaeton <- unlist(c(read_csv("Reggaeton_proyecto.txt", col_names = FALSE, show_col_types = FALSE)))
+names(text_reggaeton) <- NULL
+text_reggaeton <- tibble(line = 1:length(text_reggaeton), text = text_reggaeton)
 
-##### importar datos
-text_Salsa_canciones <- unlist(c(read_csv("Salsa_canciones.txt", col_names = FALSE, show_col_types = FALSE)))
-names(text_Salsa_canciones) <- NULL
-text_Salsa_canciones <- tibble(line = 1:length(text_Salsa_canciones), text = text_Salsa_canciones)
-
-
-
-
+##### importar datos Salsa
+text_salsa <- unlist(c(read_csv("Salsa_canciones.txt", col_names = FALSE, show_col_types = FALSE)))
+names(text_salsa) <- NULL
+text_salsa <- tibble(line = 1:length(text_salsa), text = text_salsa)
 ```
 
 
 ```{r}
 ##### tokenizar en skip-gram
 # en este caso cada token es un unigrama o un bigrama regular o un bigrama con espaciamiento
+# Rock
 text_Rock_canciones %>%
   unnest_tokens(tbl = ., input = text, output = skipgram, token = "skip_ngrams", n = 2) %>%
   filter(!is.na(skipgram)) -> text_Rock_canciones_skip
 dim(text_Rock_canciones_skip)
 head(text_Rock_canciones_skip, n = 10)
-```
-```{r}
-##### tokenizar en skip-gram
-# en este caso cada token es un unigrama o un bigrama regular o un bigrama con espaciamiento
-text_Baladas %>%
+
+# Baladas
+text_baladas %>%
   unnest_tokens(tbl = ., input = text, output = skipgram, token = "skip_ngrams", n = 2) %>%
-  filter(!is.na(skipgram)) -> text_Baladas_skip
-dim(text_Baladas_skip)
-head(text_Baladas_skip, n = 10)
+  filter(!is.na(skipgram)) -> text_baladas_skip
+dim(text_baladas_skip)
+head(text_baladas_skip, n = 10)
+
+# Reggaeton
+text_reggaeton %>%
+  unnest_tokens(tbl = ., input = text, output = skipgram, token = "skip_ngrams", n = 2) %>%
+  filter(!is.na(skipgram)) -> text_reggaeton_skip
+dim(text_reggaeton_skip)
+head(text_reggaeton_skip, n = 10)
+
+# Salsa
+text_salsa %>%
+  unnest_tokens(tbl = ., input = text, output = skipgram, token = "skip_ngrams", n = 2) %>%
+  filter(!is.na(skipgram)) -> text_salsa_skip
+dim(text_salsa_skip)
+head(text_salsa_skip, n = 10)
+
 ```
 
 
@@ -1340,7 +1348,9 @@ head(text_Baladas_skip, n = 10)
 ```{r}
 ##### remover unigramas
 suppressMessages(suppressWarnings(library(ngram)))
-# contar palabras en cada skip-gram
+
+# 1) Rock
+# Contar palabras en cada skip-gram
 text_Rock_canciones_skip$num_words <- text_Rock_canciones_skip$skipgram %>% 
   map_int(.f = ~ wordcount(.x))
 head(text_Rock_canciones_skip, n = 10)
@@ -1350,12 +1360,60 @@ text_Rock_canciones_skip %<>%
   select(-num_words)
 dim(text_Rock_canciones_skip)
 head(text_Rock_canciones_skip, n = 10)
+
+# 2) Baladas
+
+# Contar palabras en cada skip-gram
+text_baladas_skip$num_words <- text_baladas_skip$skipgram %>% 
+  map_int(.f = ~ wordcount(.x))
+head(text_baladas_skip, n = 10)
+
+# Remover unigramas (solo conservar los skip-grams de 2 palabras)
+text_baladas_skip %<>% 
+  filter(num_words == 2) %>% 
+  select(-num_words)
+
+dim(text_baladas_skip)
+head(text_baladas_skip, n = 10)
+
+# 3) Reggaeton
+
+# Contar palabras en cada skip-gram
+text_reggaeton_skip$num_words <- text_reggaeton_skip$skipgram %>% 
+  map_int(.f = ~ wordcount(.x))
+head(text_reggaeton_skip, n = 10)
+
+# Remover unigramas (solo conservar los skip-grams de 2 palabras)
+text_reggaeton_skip %<>% 
+  filter(num_words == 2) %>% 
+  select(-num_words)
+
+dim(text_reggaeton_skip)
+head(text_reggaeton_skip, n = 10)
+
+
+# 4) Salsa
+
+# Contar palabras en cada skip-gram
+text_salsa_skip$num_words <- text_salsa_skip$skipgram %>% 
+  map_int(.f = ~ wordcount(.x))
+head(text_salsa_skip, n = 10)
+
+# Remover unigramas (solo conservar los skip-grams de 2 palabras)
+text_salsa_skip %<>% 
+  filter(num_words == 2) %>% 
+  select(-num_words)
+
+dim(text_salsa_skip)
+head(text_salsa_skip, n = 10)
 ```
 
 
 
 ```{r}
-##### omitir stop words
+##### Omitir stop words
+
+##### Rock
 text_Rock_canciones_skip %>%
   separate(skipgram, c("word1", "word2"), sep = " ") %>%
   filter(!grepl(pattern = '[0-9]', x = word1)) %>%
@@ -1374,12 +1432,91 @@ text_Rock_canciones_skip %>%
   rename(weight = n) -> text_Rock_canciones_skip_counts
 dim(text_Rock_canciones_skip_counts)
 head(text_Rock_canciones_skip_counts, n = 10)
+
+##### Baladas
+text_baladas_skip %>%
+  separate(skipgram, c("word1", "word2"), sep = " ") %>%
+  filter(!grepl(pattern = '[0-9]', x = word1)) %>%
+  filter(!grepl(pattern = '[0-9]', x = word2)) %>%
+  filter(!word1 %in% stop_words_es$word) %>%
+  filter(!word2 %in% stop_words_es$word) %>%
+  mutate(word1 = chartr(
+           old = names(replacement_list) %>% str_c(collapse = ''),
+           new = replacement_list %>% str_c(collapse = ''),
+           x = word1
+         )) %>%
+  mutate(word2 = chartr(
+           old = names(replacement_list) %>% str_c(collapse = ''),
+           new = replacement_list %>% str_c(collapse = ''),
+           x = word2
+         )) %>%
+  filter(!is.na(word1)) %>%
+  filter(!is.na(word2)) %>%
+  count(word1, word2, sort = TRUE) %>%
+  rename(weight = n) -> text_baladas_skip_counts
+
+dim(text_baladas_skip_counts)
+head(text_baladas_skip_counts, n = 10)
+
+
+##### Reggaeton
+text_reggaeton_skip %>%
+  separate(skipgram, c("word1", "word2"), sep = " ") %>%
+  filter(!grepl(pattern = '[0-9]', x = word1)) %>%
+  filter(!grepl(pattern = '[0-9]', x = word2)) %>%
+  filter(!word1 %in% stop_words_es$word) %>%
+  filter(!word2 %in% stop_words_es$word) %>%
+  mutate(word1 = chartr(
+           old = names(replacement_list) %>% str_c(collapse = ''),
+           new = replacement_list %>% str_c(collapse = ''),
+           x = word1
+         )) %>%
+  mutate(word2 = chartr(
+           old = names(replacement_list) %>% str_c(collapse = ''),
+           new = replacement_list %>% str_c(collapse = ''),
+           x = word2
+         )) %>%
+  filter(!is.na(word1)) %>%
+  filter(!is.na(word2)) %>%
+  count(word1, word2, sort = TRUE) %>%
+  rename(weight = n) -> text_reggaeton_skip_counts
+
+dim(text_reggaeton_skip_counts)
+head(text_reggaeton_skip_counts, n = 10)
+
+
+##### Salsa
+text_salsa_skip %>%
+  separate(skipgram, c("word1", "word2"), sep = " ") %>%
+  filter(!grepl(pattern = '[0-9]', x = word1)) %>%
+  filter(!grepl(pattern = '[0-9]', x = word2)) %>%
+  filter(!word1 %in% stop_words_es$word) %>%
+  filter(!word2 %in% stop_words_es$word) %>%
+  mutate(word1 = chartr(
+           old = names(replacement_list) %>% str_c(collapse = ''),
+           new = replacement_list %>% str_c(collapse = ''),
+           x = word1
+         )) %>%
+  mutate(word2 = chartr(
+           old = names(replacement_list) %>% str_c(collapse = ''),
+           new = replacement_list %>% str_c(collapse = ''),
+           x = word2
+         )) %>%
+  filter(!is.na(word1)) %>%
+  filter(!is.na(word2)) %>%
+  count(word1, word2, sort = TRUE) %>%
+  rename(weight = n) -> text_salsa_skip_counts
+
+dim(text_salsa_skip_counts)
+head(text_salsa_skip_counts, n = 10)
 ```
 
 
 
 ```{r, fig.width=12, fig.height=6, fig.align='center'}
 ##### definir una red a partir de la frecuencia (weight) de los bigramas
+
+##### Rock
 g <- text_Rock_canciones_skip_counts %>%
   filter(weight > 0) %>%
   graph_from_data_frame(directed = FALSE)
@@ -1394,9 +1531,113 @@ plot(gcc, layout = layout_with_fr, vertex.color = 1, vertex.frame.color = 1, ver
 # viz 2
 set.seed(123)
 plot(gcc, layout = layout_with_fr, vertex.color = adjustcolor('red4', 0.1), vertex.frame.color = 'red4', vertex.size = 2*strength(gcc), vertex.label = NA)
-title(main = "Componente conexa", outer = T, line = -1)
-```
+title(main = "Componente conexa y Clusters - Rock", outer = T, line = -1)
 
+
+##### Baladas
+g <- text_baladas_skip_counts %>%
+  filter(weight > 0) %>%
+  graph_from_data_frame(directed = FALSE)
+g <- igraph::simplify(g)
+
+# Grafo inducido por la componente conexa
+V(g)$cluster <- clusters(graph = g)$membership
+gcc <- induced_subgraph(graph = g, vids = which(V(g)$cluster == which.max(clusters(graph = g)$csize)))
+
+par(mfrow = c(1,2), mar = c(1,1,2,1), mgp = c(1,1,1))
+# Viz 1
+set.seed(123)
+plot(
+  gcc,
+  layout       = layout_with_fr,
+  vertex.color = "skyblue",
+  vertex.frame.color = "black",
+  vertex.size  = 2,
+  vertex.label = NA
+)
+# Viz 2
+set.seed(123)
+plot(
+  gcc,
+  layout       = layout_with_fr,
+  vertex.color = adjustcolor('salmon', 0.1),
+  vertex.frame.color = 'salmon',
+  vertex.size  = 2*strength(gcc),
+  vertex.label = NA
+)
+title(main = "Componente conexa y Clusters - Baladas", outer = TRUE, line = -1)
+
+
+##### Reggaeton
+g <- text_reggaeton_skip_counts %>%
+  filter(weight > 0) %>%
+  graph_from_data_frame(directed = FALSE)
+g <- igraph::simplify(g)
+
+# Grafo inducido por la componente conexa
+V(g)$cluster <- clusters(graph = g)$membership
+gcc <- induced_subgraph(graph = g, vids = which(V(g)$cluster == which.max(clusters(graph = g)$csize)))
+
+par(mfrow = c(1,2), mar = c(1,1,2,1), mgp = c(1,1,1))
+# Viz 1
+set.seed(123)
+plot(
+  gcc,
+  layout             = layout_with_fr,
+  vertex.color       = "gold",
+  vertex.frame.color = "gold",
+  vertex.size        = 2,
+  vertex.shape       = "square",
+  vertex.label       = NA
+)
+# Viz 2
+set.seed(123)
+plot(
+  gcc,
+  layout       = layout_with_fr,
+  vertex.color = adjustcolor('lightgreen', 0.1),
+  vertex.frame.color = 'darkgreen',
+  vertex.size  = 2*strength(gcc),
+  vertex.label = NA
+)
+title(main = "Componente conexa y Clusters - Reggaeton", outer = TRUE, line = -1)
+
+
+##### Salsa
+g <- text_salsa_skip_counts %>%
+  filter(weight > 0) %>%
+  graph_from_data_frame(directed = FALSE)
+g <- igraph::simplify(g)
+
+# Grafo inducido por la componente conexa
+V(g)$cluster <- clusters(graph = g)$membership
+gcc <- induced_subgraph(graph = g, vids = which(V(g)$cluster == which.max(clusters(graph = g)$csize)))
+
+par(mfrow = c(1,2), mar = c(1,1,2,1), mgp = c(1,1,1))
+# Viz 1
+set.seed(123)
+plot(
+  gcc,
+  layout             = layout_with_fr,
+  vertex.color       = "firebrick4",
+  vertex.frame.color = "firebrick3",
+  vertex.size        = 3,
+  vertex.shape       = "pie",
+  vertex.label       = NA
+)
+# Viz 2
+set.seed(123)
+plot(
+  gcc,
+  layout       = layout_with_fr,
+  vertex.color = adjustcolor('chocolate4', 0.1),
+  vertex.frame.color = 'chocolate4',
+  vertex.size  = 2*strength(gcc),
+  vertex.label = NA
+)
+title(main = "Componente conexa y Clusters - Salsa", outer = TRUE, line = -1)
+
+```
 # Comparación
 
 Géneros de Música Colombiana. 
