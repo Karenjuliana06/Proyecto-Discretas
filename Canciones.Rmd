@@ -1122,15 +1122,18 @@ gcc <- induced_subgraph(graph = g, vids = which(V(g)$cluster == which.max(cluste
 par(mfrow = c(1,2), mar = c(1,1,2,1), mgp = c(1,1,1))
 # viz 1
 set.seed(123)
-plot(gcc, layout = layout_with_kk, vertex.color = 1, vertex.frame.color = 1, vertex.size = 3, vertex.label.color = 'black', vertex.label.cex = 0.9, vertex.label.dist = 1)
+plot(gcc, layout = layout_with_kk, vertex.color = 1, vertex.frame.color = 1, vertex.size = 3, vertex.label.color = 'black', vertex.label.cex = 0.7, vertex.label.dist = 1.5, vertex.label.degree = -pi/4)
 # viz 2
 set.seed(123)
-plot(gcc, layout = layout_with_kk, vertex.color = adjustcolor('red4', 0.1), vertex.frame.color = 'red4', vertex.size = 2*strength(gcc), vertex.label.color = 'black', vertex.label.cex = 0.9, vertex.label.dist = 1, edge.width = 3*E(g)$weight/max(E(g)$weight))
+plot(gcc, layout = layout_with_kk, vertex.color = adjustcolor('red4', 0.1), vertex.frame.color = 'red4', vertex.size = 2*strength(gcc), vertex.label.color = 'black', vertex.label.cex = 0.7, vertex.label.dist = 1.5, vertex.label.degree = -pi/4, edge.width = 3*E(g)$weight/max(E(g)$weight))
 title(main = "Componente conexa Rock Canciones", outer = T, line = -1)
 ```
 
 ```{r, fig.width=12, fig.height=6, fig.align='center'}
 ##### componente conexa mas grande de la red
+labels <- ifelse(strength(gcc) > 3, V(gcc)$name, NA)
+layout <- layout_with_fr(gcc)
+
 g <- text_Baladas_bi_counts %>%
   filter(weight > 0) %>%
   graph_from_data_frame(directed = FALSE)
@@ -1140,14 +1143,17 @@ gcc <- induced_subgraph(graph = g, vids = which(V(g)$cluster == which.max(cluste
 par(mfrow = c(1,2), mar = c(1,1,2,1), mgp = c(1,1,1))
 # viz 1
 set.seed(123)
-plot(gcc, layout = layout_with_kk, vertex.color = 1, vertex.frame.color = 1, vertex.size = 3, vertex.label.color = 'black', vertex.label.cex = 0.6, vertex.label.dist = 2)
+plot(gcc, layout = layout_with_kk, vertex.color = 1, vertex.frame.color = 1, vertex.size = 3, vertex.label.color = 'black', vertex.label.cex = 0.7, vertex.label.dist = 1.5, vertex.label.degree = -pi/4, edge.width = 3 * E(gcc)$weight / max(E(gcc)$weight))
 # viz 2
 set.seed(123)
-plot(gcc, layout = layout_with_kk, vertex.color = adjustcolor('green4', 0.1), vertex.frame.color = 'green4', vertex.size = 2*strength(gcc), vertex.label.color = 'black', vertex.label.cex = 0.9, vertex.label.dist = 1, edge.width = 3*E(g)$weight/max(E(g)$weight))
+plot(gcc, layout = layout_with_kk, vertex.color = adjustcolor('green4', 0.1), vertex.frame.color = 'green4', vertex.size = 2*strength(gcc), vertex.label = labels, vertex.label.color = 'black', vertex.label.cex = 0.7, vertex.label.dist = 1.5, vertex.label.degree = -pi/4, edge.width = 3*E(gcc)$weight/max(E(gcc)$weight))
 title(main = "Componente conexa Baladas", outer = T, line = -1)
 ```
 ```{r, fig.width=12, fig.height=6, fig.align='center'}
 ##### componente conexa mas grande de la red
+labels <- ifelse(strength(gcc) > 3, V(gcc)$name, NA)
+layout <- layout_with_fr(gcc)
+
 g <- text_Reggaeton_bi_counts %>%
   filter(weight > 0) %>%
   graph_from_data_frame(directed = FALSE)
@@ -1157,14 +1163,17 @@ gcc <- induced_subgraph(graph = g, vids = which(V(g)$cluster == which.max(cluste
 par(mfrow = c(1,2), mar = c(1,1,2,1), mgp = c(1,1,1))
 # viz 1
 set.seed(123)
-plot(gcc, layout = layout_with_kk, vertex.color = 1, vertex.frame.color = 1, vertex.size = 3, vertex.label.color = 'black', vertex.label.cex = 0.6, vertex.label.dist = 2)
+plot(gcc, layout = layout_with_kk, vertex.color = 1, vertex.frame.color = 1, vertex.size = 3, vertex.label.color = 'black', vertex.label.cex = 0.7, vertex.label.dist = 1.5, vertex.label.degree = -pi/4, edge.width = 3 * E(gcc)$weight / max(E(gcc)$weight))
 # viz 2
 set.seed(123)
-plot(gcc, layout = layout_with_kk, vertex.color = adjustcolor('blue4', 0.1), vertex.frame.color = 'blue4', vertex.size = 2*strength(gcc), vertex.label.color = 'black', vertex.label.cex = 0.9, vertex.label.dist = 1, edge.width = 3*E(g)$weight/max(E(g)$weight))
+plot(gcc, layout = layout_with_kk, vertex.color = adjustcolor('red4', 0.1), vertex.frame.color = 'red4', vertex.size = 2*strength(gcc), vertex.label = labels, vertex.label.color = 'black', vertex.label.cex = 0.7, vertex.label.dist = 1.5, vertex.label.degree = -pi/4, edge.width = 3*E(gcc)$weight/max(E(gcc)$weight))
 title(main = "Componente conexa Reggaeton", outer = T, line = -1)
 ```
 ```{r, fig.width=12, fig.height=6, fig.align='center'}
 ##### componente conexa mas grande de la red
+labels <- ifelse(strength(gcc) > 3, V(gcc)$name, NA)
+layout <- layout_with_fr(gcc)
+
 g <- text_Salsa_canciones_bi_counts %>%
   filter(weight > 0) %>%
   graph_from_data_frame(directed = FALSE)
@@ -1174,11 +1183,11 @@ gcc <- induced_subgraph(graph = g, vids = which(V(g)$cluster == which.max(cluste
 par(mfrow = c(1,2), mar = c(1,1,2,1), mgp = c(1,1,1))
 # viz 1
 set.seed(123)
-plot(gcc, layout = layout_with_kk, vertex.color = 1, vertex.frame.color = 1, vertex.size = 3, vertex.label.color = 'black', vertex.label.cex = 0.6, vertex.label.dist = 2)
+plot(gcc, layout = layout_with_kk, vertex.color = 1, vertex.frame.color = 1, vertex.size = 3, vertex.label.color = 'black', vertex.label.cex = 0.7, vertex.label.dist = 1.5, vertex.label.degree = -pi/4, edge.width = 3 * E(gcc)$weight / max(E(gcc)$weight))
 # viz 2
 set.seed(123)
-plot(gcc, layout = layout_with_kk, vertex.color = adjustcolor('purple4', 0.1), vertex.frame.color = '4', vertex.size = 2*strength(gcc), vertex.label.color = 'black', vertex.label.cex = 0.9, vertex.label.dist = 1, edge.width = 3*E(g)$weight/max(E(g)$weight))
-title(main = "Componente conexa Baladas", outer = T, line = -1)
+plot(gcc, layout = layout_with_kk, vertex.color = adjustcolor('purple4', 0.1), vertex.frame.color = 'purple4', vertex.size = 2*strength(gcc), vertex.label = labels, vertex.label.color = 'black', vertex.label.cex = 0.7, vertex.label.dist = 1.5, vertex.label.degree = -pi/4, edge.width = 3*E(gcc)$weight/max(E(gcc)$weight))
+title(main = "Componente conexa Reggaeton", outer = T, line = -1)
 ```
 
 
