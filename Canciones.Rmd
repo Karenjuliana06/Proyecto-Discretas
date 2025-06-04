@@ -742,7 +742,84 @@ text <- c("Préstame tu peine",
           "Amárranos",
           "Tiempo",
           "Detente muchos años")
+
 # convertir a data frame
+text_df <- tibble(line = 1:length(text), text = text)
+# tokenizar en bigramas
+text_df %>% 
+  unnest_tokens(tbl = ., input = text, output = bigram, token = "ngrams", n = 2) %>%
+  head(n = 10)
+```
+
+```{r}
+#### bigramas: Ejemplo cancion Baladas
+# texto
+text <- c("Que si pudiera darle vueltas a la Tierra una y otra vez",
+          "Yo buscaría de alguien con tus mismos ojos, con tus mismos labios",
+          "Con tu misma boca y con tu misma piel",
+          "Que si pudiera darle al tiempo otro poco de tiempo",
+          "Para comprender que sin ti, mi vida ya no la siento",
+          "Que el color se vuelve a blanco y negro",
+          "Y sé que la distancia me hizo ciego",
+          "En todos los momentos",
+          "Los que tenía que verte aquí, Que si pudiera darle vueltas a la Tierra una y otra vez",
+          "Yo buscaría de alguien con tus mismos ojos, con tus mismos labios",
+          "Con tu misma boca y con tu misma piel",
+          "Que si pudiera darle al tiempo otro poco de tiempo",
+          "Para comprender que sin ti, mi vida ya no la siento",
+          "Que el color se vuelve a blanco y negro",
+          "Y sé que la distancia me hizo ciego",
+          "En todos los momentos",
+          "Los que tenía que verte aquí")
+
+#convertir a data frame
+text_df <- tibble(line = 1:length(text), text = text)
+# tokenizar en bigramas
+text_df %>% 
+  unnest_tokens(tbl = ., input = text, output = bigram, token = "ngrams", n = 2) %>%
+  head(n = 10)
+```
+
+```{r}
+##### bigramas: Ejemplo Reggaeton
+# Texto
+text <- c("No hay que sufrir, no hay que llorar",
+          "La vida es una y es un carnaval",
+          "baladas Lo malo se irá, todo pasará",
+          "La vida es una y es un carnaval",
+          "La vida es una y es un carnaval",
+          "La vida es una y es un carnaval",
+          "Seré tu ángel guardián",
+          "Tu mejor compañía",
+          "Toma fuerte mi mano",
+          "Te enseñaré a volar",
+          "Ya no habrá mal de amores",
+          "Vendrán tiempos mejores",
+          "Levanta ya tu mano que vinimos a gozar")
+
+#convertir a data frame
+text_df <- tibble(line = 1:length(text), text = text)
+# tokenizar en bigramas
+text_df %>% 
+  unnest_tokens(tbl = ., input = text, output = bigram, token = "ngrams", n = 2) %>%
+  head(n = 10)
+          
+```
+
+```{r}
+#### bigramas: Ejemplo Salsa
+# Texto
+text <- c("Me siento en el techo y empiezo a ordenar para ti",
+          "Los besos que no pude dibujar",
+          "Sale el sol, me acaricia",
+          "Nace tu canción",
+          "La gente como tú, enciende mi ser",
+          "Perdóname si molesto, estas cosas que hago yo",
+          "Ya ves, ya he olvidado o si son verdes o son azul",
+          "Y te diré, tus ojos viven en mi",
+          "Y son los más tiernos de la mayoría")
+
+#convertir a data frame
 text_df <- tibble(line = 1:length(text), text = text)
 # tokenizar en bigramas
 text_df %>% 
@@ -756,7 +833,26 @@ text_df %>%
 text_Rock_canciones <- unlist(c(read_csv("Rock_canciones.txt", col_names = FALSE, show_col_types = FALSE)))
 names(text_Rock_canciones) <- NULL
 text_Rock_canciones <- tibble(line = 1:length(text_Rock_canciones), text = text_Rock_canciones)
+```
+```{r}
+##### importar datos
+text_Baladas <- unlist(c(read_csv("Baladas.txt", col_names = FALSE, show_col_types = FALSE)))
+names(text_Baladas) <- NULL
+text_Baladas<- tibble(line = 1:length(text_Baladas), text = text_Baladas)
+```
 
+```{r}
+##### importar datos
+text_Reggaeton <- unlist(c(read_csv("Reggaeton.txt", col_names = FALSE, show_col_types = FALSE)))
+names(text_Rock_Reggaeton) <- NULL
+text_Reggaeton <- tibble(line = 1:length(text_Reggaeton), text = text_Reggaeton)
+```
+
+```{r}
+##### importar datos
+text_Salsa_canciones <- unlist(c(read_csv("Salsa_canciones.txt", col_names = FALSE, show_col_types = FALSE)))
+names(text_Salsa_canciones) <- NULL
+text_Salsa_canciones <- tibble(line = 1:length(text_Salsa_canciones), text = text_Salsa_canciones)
 ```
 
 
