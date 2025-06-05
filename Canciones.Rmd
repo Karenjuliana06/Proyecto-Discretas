@@ -1996,8 +1996,8 @@ rownames(tab) <- c(
 colnames(tab) <- c(
   "Baladas",
   "Reggaeton",
-  "Rock_canciones",
-  "Salsa_canciones"
+  "Rock",
+  "Salsa"
 )
 
 round(tab, 4)
